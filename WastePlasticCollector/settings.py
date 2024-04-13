@@ -44,9 +44,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
     ],
-'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
-]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASS': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
 
 SIMPLE_JWT = {
@@ -66,6 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'UserManagement',
+    'WastePlasticCollectorApp',
 ]
 
 MIDDLEWARE = [
@@ -159,5 +163,6 @@ AUTH_PROFILE_MODULE = 'UserManagement.CustomUsers'
 AUTH_USER_MODEL = 'UserManagement.CustomUsers'
 AUTHENTICATION_BACKENDS = [
     'UserManagement.authentication.CustomAuthenticationBackend',
+    # 'WastePlasticCollectorApp.authentication.CustomAuthenticationBackend',
 ]
 

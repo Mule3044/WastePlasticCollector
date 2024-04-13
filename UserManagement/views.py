@@ -3,13 +3,16 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpResponse
-from rest_framework import status
+from rest_framework import status, authentication, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import  Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from .utils import get_tokens_for_user
 from .serializers import RegistrationSerializer, PasswordChangeSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .models import CustomUsers
 # Create your views here.
 
 
@@ -20,6 +23,13 @@ class RegistrationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserListView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = CustomUsers.objects.all()
+    serializer_class = RegistrationSerializer
 
       
 class CustomAuthenticationBackend(ModelBackend):
