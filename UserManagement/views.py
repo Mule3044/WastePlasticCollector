@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpResponse
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status, authentication, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import  Response
@@ -72,11 +73,23 @@ class LogoutView(APIView):
 
       
 class ChangePasswordView(APIView):
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
-        serializer = PasswordChangeSerializer(context={'request': request}, data=request.data)
-        serializer.is_valid(raise_exception=True) #Another way to write is as in Line 17
-        request.user.set_password(serializer.validated_data['new_password'])
-        request.user.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            serializer = PasswordChangeSerializer(context={'request': request}, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            request.user.set_password(serializer.validated_data['new_password'])
+            request.user.save()
+            return Response({
+                'success': True,
+                "message": "Password changed successfully.",
+                'data': serializer.data
+                }, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({
+                'success': False,
+                "message": "Failed to change password.",
+                "error": str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
