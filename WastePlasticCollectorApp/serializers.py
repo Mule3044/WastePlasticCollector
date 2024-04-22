@@ -10,5 +10,5 @@ class WastePlasticSerializer(serializers.ModelSerializer):
 class WastePlasticRequestorSerializer(serializers.ModelSerializer):
     class Meta:
         model = WastePlasticRequestor
-        fields = ['id', 'requestor', 'wastePlastic_type', 'request_date', 'wastePlastic_size', 'wastePlastic_address', 'unique_location', 'latitude', 'longitude']
+        fields = ['id', 'requestor', 'wastePlastic_type', 'request_date', 'wastePlastic_size', 'wastePlastic_address', 'unique_location', 'latitude', 'longitude', 'message']
         read_only_fields = ['id', 'request_date']

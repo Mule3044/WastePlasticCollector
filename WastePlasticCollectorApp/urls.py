@@ -15,4 +15,5 @@ urlpatterns = [
     path('wasteplasticrequestor/<int:pk>/', views.WastePlasticRequestorDetailAPIView.as_view(), name='wasteplasticrequestor_detail'),
     path('wasteplasticrequestor/update/<int:pk>/', views.WastePlasticRequestorUpdateAPIView.as_view(), name='wasteplasticrequestor_update'),
     path('wasteplasticrequestor/delete/<int:pk>/', views.WastePlasticRequestorDeleteAPIView.as_view(), name='wasteplasticrequestor_delete'),
+    path('home/', views.index, name='index'),
 ]

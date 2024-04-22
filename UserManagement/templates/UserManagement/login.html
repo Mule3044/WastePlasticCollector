@@ -1,0 +1,61 @@
+{% extends 'WastePlasticCollectorApp/base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Login</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="loginForm" method="post" action="{% url 'UserManagement:login' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p>Don't have an account? <a href="{% url 'UserManagement:register' %}">Register here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_script %}
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        // Prevent default form submission behavior
+        event.preventDefault();
+
+        // Fetch form data
+        const formData = new FormData(event.target);
+
+        // Fetch login endpoint URL
+        const url = event.target.action;
+
+        // Fetch options for the fetch request
+        const options = {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        };
+
+        // Send fetch request to login endpoint
+        fetch(url, options)
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to the index page upon successful login
+                    window.location.href = "http://localhost:8000/api/home/";
+                } else {
+                    console.error('Login failed:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error during login:', error));
+    });
+</script>
+{% endblock %}

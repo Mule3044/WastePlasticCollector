@@ -1,4 +1,5 @@
 from rest_framework import generics
+from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status, authentication, permissions
@@ -7,6 +8,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import WastePlastic, WastePlasticRequestor
 from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer
 from .forms import WastePlasticForm, WastePlasticRequestorForm
+
+
+def index(request):
+    return render(request, 'WastePlasticCollectorApp/index.html')
 
 class WastePlasticCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -32,14 +37,7 @@ class WastePlasticCreateAPIView(generics.ListCreateAPIView):
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
-# class WastePlasticListCreateAPIView(generics.CreateAPIView):
-#     queryset = WastePlastic.objects.all()
-#     serializer_class = WastePlasticSerializer
 
-#     def perform_create(self, serializer):
-#         form = WastePlasticForm(self.request.POST)
-#         if form.is_valid():
-#             serializer.save(user=form.cleaned_data['user'])
 class WastePlasticListAPIView(generics.ListAPIView):
     queryset = WastePlastic.objects.all()
     serializer_class = WastePlasticSerializer

@@ -15,6 +15,11 @@ ROLES = [
     ('admin', 'Admin'),
 ]
 
+USER_STATUS = [
+    ('active', 'Active'),
+    ('pending', 'Pending'),
+]
+
 
 # Create your models here
 class CustomUserManager(BaseUserManager):
@@ -56,6 +61,7 @@ class CustomUsers(AbstractBaseUser):
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=30, unique=True, null=False, blank=False)
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     country = models.CharField(max_length=100, default="Ethiopia")
     region = models.CharField(max_length=100, null=True, blank=True)
     zone = models.CharField(max_length=100, null=True, blank=True)
@@ -64,6 +70,7 @@ class CustomUsers(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLES, default='guest')
+    user_status = models.CharField(max_length=20, choices=USER_STATUS, default='active')
 
     objects = CustomUserManager()
 
