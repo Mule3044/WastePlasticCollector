@@ -6,6 +6,16 @@ PICK_UP_STATUS = [
     ('on progress', 'On Progress'),
     ('rejected', 'Rejected'),
 ]
+RECENT_ACTIVITY = [
+    ('pending', 'Pending'),
+    ('completed', 'Completed'),
+    ('canceled', 'Canceled'),
+]
+REQUEST_HISTORY = [
+    ('pending', 'Pending'),
+    ('completed', 'Completed'),
+    ('canceled', 'Canceled'),
+]
 
 # Create your models here.
 class WastePlastic(models.Model):
@@ -34,7 +44,8 @@ class WastePlasticRequestor(models.Model):
     latitude = models.FloatField(max_length=50, null=True, blank=True)
     longitude = models.FloatField(max_length=50, null=True, blank=True)
     message = models.TextField(null=True, blank=True)
-    status=models.BooleanField(default=False)
+    recent_activity = models.CharField(max_length=100, choices=RECENT_ACTIVITY, default='pending')
+    request_history = models.CharField(max_length=100, choices=REQUEST_HISTORY, default='pending')
 
     def __str__(self):
         return self.wastePlastic_type

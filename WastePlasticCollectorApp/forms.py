@@ -9,4 +9,4 @@ class WastePlasticForm(forms.ModelForm):
 class WastePlasticRequestorForm(forms.ModelForm):
     class Meta:
         model = WastePlasticRequestor
-        fields = ['requestor', 'wastePlastic_type', 'wastePlastic_size', 'wastePlastic_address', 'unique_location', 'latitude', 'longitude', 'message', 'status']
+        fields = ['requestor', 'wastePlastic_type', 'wastePlastic_size', 'wastePlastic_address', 'unique_location', 'latitude', 'longitude', 'message', 'recent_activity', 'request_history']
