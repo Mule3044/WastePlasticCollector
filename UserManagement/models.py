@@ -58,8 +58,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUsers(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True, null=False, blank=False)
-    first_name = models.CharField(max_length=255, null=True, blank=True)
-    last_name = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=30, unique=True, null=False, blank=False)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     country = models.CharField(max_length=100, default="Ethiopia")

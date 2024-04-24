@@ -5,9 +5,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import WastePlastic, WastePlasticRequestor
-from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer
-from .forms import WastePlasticForm, WastePlasticRequestorForm
+from .models import WastePlastic, WastePlasticRequestor, Notification
+from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer 
 
 
 def index(request):
@@ -252,3 +251,43 @@ class WastePlasticRequestorDeleteAPIView(generics.DestroyAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
+class NotificationListCreateView(generics.ListCreateAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response({
+                'success': True, 
+                'message': 'Notification created successfully', 
+                'data': serializer.data
+                }, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+            return Response({
+                'success': False, 
+                'message': 'Failed to create notification', 
+                'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+class NotificationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response({
+                'success': True, 
+                'message': 'Notification deleted successfully'
+                }, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({
+                'success': False, 
+                'message': 'Failed to delete notification', 
+                'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)

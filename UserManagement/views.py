@@ -9,9 +9,10 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import  Response
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.generics import ListAPIView
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 # from rest_framework.authtoken.models import Token
 from .models import CustomUsers
@@ -19,6 +20,8 @@ from .models import CustomUsers
 
 
 class RegistrationView(APIView):
+    authentication_classes = []
+    permission_classes = []
     def get(self, request):
         return render(request, 'UserManagement/user_registration.html')
 
@@ -26,13 +29,23 @@ class RegistrationView(APIView):
         try:
             serializer = RegistrationSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
-                return Response({'success': True, 'success_message': "User created successfully!", 'data': serializer.data}, status=status.HTTP_201_CREATED)
+                user = serializer.save()
+                return Response({
+                    'success': True, 
+                    'success_message': "User created successfully!", 
+                    'data': {
+                        'id': user.id,
+                        **serializer.data
+                    }
+                }, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            # Log the exception or handle it accordingly
-            return Response({'success': False,
-                'message': 'Failed to register user','error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({
+                'success': False,
+                'message': 'Failed to register user',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class UserListView(ListAPIView):
@@ -41,6 +54,32 @@ class UserListView(ListAPIView):
     queryset = CustomUsers.objects.all()
     serializer_class = RegistrationSerializer
 
+
+class CustomUsersUpdateAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = CustomUsers.objects.all()
+    serializer_class = CustomUsersUpdateSerializer
+    partial = True
+
+    def update(self, request, *args, **kwargs):
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response({
+                'success': True,
+                'message': 'User updated successfully',
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to update user',
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
       
 class CustomAuthenticationBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):

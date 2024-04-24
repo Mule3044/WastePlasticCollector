@@ -7,7 +7,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUsers
-        fields = ['email', 'phone_number', 'profile_photo', 'role', 'password', 'password2']
+        fields = ['email', 'phone_number', 'name', 'role', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -15,6 +15,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def save(self):
         user = CustomUsers(
             email=self.validated_data['email'],
+            name=self.validated_data['name'],
             phone_number=self.validated_data['phone_number'],
             profile_photo=self.validated_data.get('profile_photo', ''),
             role=self.validated_data.get('role', 'guest')
@@ -37,3 +38,21 @@ class PasswordChangeSerializer(serializers.Serializer):
         if not self.context['request'].user.check_password(value):
             raise serializers.ValidationError({'current_password': 'Does not match'})
         return value
+
+class CustomUsersUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUsers
+        fields = ['email', 'name', 'phone_number', 'profile_photo', 'role']
+
+    def validate_phone_number(self, value):
+        # Add custom validation for phone_number if needed
+        return value
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.name = validated_data.get('name', instance.name)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.profile_photo = validated_data.get('profile_photo', instance.profile_photo)
+        instance.role = validated_data.get('role', instance.role)
+        instance.save()
+        return instance

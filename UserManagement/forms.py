@@ -13,7 +13,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUsers
-        fields = ('email', 'first_name', 'last_name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role')
+        fields = ('email', 'name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -47,17 +47,17 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'first_name', 'last_name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role', 'is_admin', 'is_active')
+    list_display = ('email', 'name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role', 'is_admin', 'is_active')
     list_filter = ('is_admin', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role')}),
+        ('Personal info', {'fields': ('name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role')}),
         ('Permissions', {'fields': ('is_admin', 'is_active')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'first_name', 'last_name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role', 'is_admin', 'is_active'),
+            'fields': ('email', 'password1', 'password2', 'name', 'phone_number', 'profile_photo', 'role', 'user_status', 'country', 'region', 'zone', 'woreda', 'kebele', 'role', 'is_admin', 'is_active'),
         }),
     )
     search_fields = ('email',)

@@ -3,8 +3,8 @@ from UserManagement.models import CustomUsers
 
 PICK_UP_STATUS = [
     ('approved', 'Approved'),
-    ('on progress', 'On Progress'),
-    ('rejected', 'Rejected'),
+    ('pending', 'Pending'),
+    ('canceled', 'Canceled'),
 ]
 RECENT_ACTIVITY = [
     ('pending', 'Pending'),
@@ -23,7 +23,7 @@ class WastePlastic(models.Model):
     wastePlastic_type = models.CharField(max_length=100)
     collection_date = models.DateField(auto_now_add=True)
     wastePlastic_size = models.PositiveIntegerField()
-    pickUp_status=models.CharField(max_length=100, choices=PICK_UP_STATUS, default='on progress')
+    pickUp_status=models.CharField(max_length=100, choices=PICK_UP_STATUS, default='pending')
 
     def __str__(self):
         return self.wastePlastic_type
@@ -44,8 +44,7 @@ class WastePlasticRequestor(models.Model):
     latitude = models.FloatField(max_length=50, null=True, blank=True)
     longitude = models.FloatField(max_length=50, null=True, blank=True)
     message = models.TextField(null=True, blank=True)
-    recent_activity = models.CharField(max_length=100, choices=RECENT_ACTIVITY, default='pending')
-    request_history = models.CharField(max_length=100, choices=REQUEST_HISTORY, default='pending')
+    pickUp_status=models.CharField(max_length=100, choices=PICK_UP_STATUS, default='pending')
 
     def __str__(self):
         return self.wastePlastic_type
@@ -58,7 +57,8 @@ class WastePlasticRequestor(models.Model):
 
 # 1. 👇 Add the following line
 class Notification(models.Model):
-    message = models.CharField(max_length=100)
+    request_id = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
+    notification = models.TextField(null=True, blank=True)
     
     def __str__(self):
-        return self.message
+        return self.notification
