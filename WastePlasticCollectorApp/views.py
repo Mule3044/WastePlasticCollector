@@ -307,7 +307,7 @@ class FilterByRoleAndUserIdAPIView(generics.ListAPIView):
                 'success': True,
                 'data': serializer.data,
                 'total_collection': total_collection,
-                'carbon_emition': total_collection/100
+                'carbon_emition': total_collection
             })
         except Exception as e:
             return Response({
