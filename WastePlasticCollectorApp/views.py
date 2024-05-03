@@ -283,31 +283,25 @@ class FilterByRoleAndUserIdAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         try:
-            # Get the requestor_id from URL parameter
             requestor_id = self.kwargs.get('requestor_id')
-
-            # Filter WastePlasticRequestor objects by requestor_id
             queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role='agent')
             return queryset
         except Exception as e:
-            # Return an empty queryset if there's an error
             return WastePlasticRequestor.objects.none()
 
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
             serializer = self.get_serializer(queryset, many=True)
-            waste_plastic_collection = serializer.data
-            print(waste_plastic_collection)
-            total_collection=0
-            # carbon_emition = total_collection/1000
-            for i in serializer.data:
-                total_collection += i['wastePlastic_size']
+            
+            total_collection = sum(item['wastePlastic_size'] for item in serializer.data)
+            carbon_emission = total_collection * 4.03239  # Conversion factor: 1kg of PET plastic = 4.03239kg of CO2
+            
             return Response({
                 'success': True,
                 'data': serializer.data,
                 'total_collection': total_collection,
-                'carbon_emition': total_collection
+                'carbon_emission': carbon_emission
             })
         except Exception as e:
             return Response({
