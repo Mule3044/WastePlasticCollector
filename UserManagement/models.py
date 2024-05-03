@@ -57,15 +57,15 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUsers(AbstractBaseUser):
-    email = models.EmailField(max_length=255, unique=True, null=False, blank=False)
+    email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255, null=True, blank=True)
-    phone_number = models.CharField(max_length=30, unique=True, null=False, blank=False)
+    phone_number = models.CharField(max_length=30, unique=True, null=True, blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     country = models.CharField(max_length=100, default="Ethiopia")
-    region = models.CharField(max_length=100, null=True, blank=True)
-    zone = models.CharField(max_length=100, null=True, blank=True)
-    woreda = models.CharField(max_length=100, null=True, blank=True)
-    kebele = models.CharField(max_length=100, null=True, blank=True)
+    region = models.CharField(max_length=100)
+    zone = models.CharField(max_length=100)
+    woreda = models.CharField(max_length=100)
+    kebele = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLES, default='guest')

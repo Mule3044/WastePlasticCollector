@@ -1,12 +1,15 @@
 from rest_framework import generics
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
+from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
-from .models import WastePlastic, WastePlasticRequestor, Notification
-from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer 
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp
+from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer
+from UserManagement.models import CustomUsers
 
 
 def index(request):
@@ -250,6 +253,69 @@ class WastePlasticRequestorDeleteAPIView(generics.DestroyAPIView):
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
+class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
+    queryset = WastePlasticRequestor.objects.all()
+    serializer_class = WastePlasticRequestorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset().order_by('-request_date')[:10]
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve latest waste plastic requestors',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class FilterByRoleAndUserIdAPIView(generics.ListAPIView):
+    serializer_class = WastePlasticRequestorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        try:
+            # Get the requestor_id from URL parameter
+            requestor_id = self.kwargs.get('requestor_id')
+
+            # Filter WastePlasticRequestor objects by requestor_id
+            queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role='agent')
+            return queryset
+        except Exception as e:
+            # Return an empty queryset if there's an error
+            return WastePlasticRequestor.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            waste_plastic_collection = serializer.data
+            print(waste_plastic_collection)
+            total_collection=0
+            # carbon_emition = total_collection/1000
+            for i in serializer.data:
+                total_collection += i['wastePlastic_size']
+            return Response({
+                'success': True,
+                'data': serializer.data,
+                'total_collection': total_collection,
+                'carbon_emition': total_collection/100
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve waste plastic requestors',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class NotificationListCreateView(generics.ListCreateAPIView):
     queryset = Notification.objects.all()
@@ -291,3 +357,55 @@ class NotificationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
                 'message': 'Failed to delete notification', 
                 'error': str(e)
                 }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RequestPickUpCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = RequestPickUp.objects.all()
+    serializer_class = RequestPickUpSerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response({
+                'success': True,
+                'message': 'Request PickUp created successfully',
+                'data': serializer.data
+            }, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to create request pick up',
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RequestPickUpUpdateAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = RequestPickUp.objects.all()
+    serializer_class = RequestPickUpSerializer
+    partial = True
+
+    def update(self, request, *args, **kwargs):
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response({
+                'success': True,
+                'message': 'Request pick up updated successfully',
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to update request pick up',
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)

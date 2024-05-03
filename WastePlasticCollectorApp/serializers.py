@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import WastePlastic, WastePlasticRequestor, Notification
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp
 
 class WastePlasticSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,4 +17,9 @@ class WastePlasticRequestorSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
+        fields = '__all__'
+
+class RequestPickUpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestPickUp
         fields = '__all__'

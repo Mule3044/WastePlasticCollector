@@ -12,12 +12,11 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.generics import ListAPIView
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 # from rest_framework.authtoken.models import Token
 from .models import CustomUsers
 # Create your views here.
-
 
 class RegistrationView(APIView):
     authentication_classes = []
@@ -81,51 +80,31 @@ class CustomUsersUpdateAPIView(generics.RetrieveUpdateAPIView):
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
       
-class CustomAuthenticationBackend(ModelBackend):
-    def authenticate(self, request, username=None, password=None, **kwargs):
-        user = None
-        try:
-            user = CustomUsers.objects.get(email=username)
-        except CustomUsers.DoesNotExist:
-            try:
-                user = CustomUsers.objects.get(phone_naumber=username)
-            except CustomUsers.DoesNotExist:
-                pass
-        
-        if user is not None and user.check_password(password):
-            return user
-        return None
+
 
 class LoginView(APIView):
-    def get(self, request):
-        return render(request, 'UserManagement/login.html')
-    
     def post(self, request):
         if 'username' not in request.data or 'password' not in request.data:
-            return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
 
         username = request.data['username']
         password = request.data['password']
         
         user = authenticate(request, username=username, password=password)
         
-        if user is not None and user.user_status == 'active' and user.role != 'guest':
+        if user is not None:
             login(request, user)
             auth_data = get_tokens_for_user(request.user)
-            profile_data = {}
-            if user.profile_photo:
-                # Construct the absolute URL for the profile photo
-                profile_photo_url = request.build_absolute_uri(user.profile_photo.url)
-                profile_data['profile_photo'] = profile_photo_url
-            if user.email:
-                profile_data['username'] = user.email
-            elif user.phone_number:
-                profile_data['phone_number'] = user.phone_number
-            profile_data['role'] = user.role
-            
-            response_data = {'msg': 'Login Success', **profile_data, **auth_data}
+            response_data = {
+                'message': 'Login Success', 
+                'username': user.email, 
+                'name': user.name,
+                'phone_number': user.phone_number,
+                'profile_photo': user.profile_photo.url if user.profile_photo else None,
+                'user_status': user.user_status,
+                'role': user.role,
+                **auth_data}
             return Response(response_data, status=status.HTTP_200_OK)
-
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
       
 class LogoutView(APIView):

@@ -6,10 +6,11 @@ PICK_UP_STATUS = [
     ('pending', 'Pending'),
     ('canceled', 'Canceled'),
 ]
-RECENT_ACTIVITY = [
+AGENT_STATUS = [
+    ('accept', 'Accept'),
+    ('reject', 'Reject'),
     ('pending', 'Pending'),
-    ('completed', 'Completed'),
-    ('canceled', 'Canceled'),
+
 ]
 REQUEST_HISTORY = [
     ('pending', 'Pending'),
@@ -55,7 +56,13 @@ class WastePlasticRequestor(models.Model):
     def get_name(self):
         return self.wastePlastic_type+" "+self.wastePlastic_size
 
-# 1. 👇 Add the following line
+class RequestPickUp(models.Model):
+    requestId = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
+    userId = models.ForeignKey(CustomUsers, on_delete=models.CASCADE)
+    agent_status = models.CharField(max_length=100, choices=AGENT_STATUS, default='pending')
+
+
+
 class Notification(models.Model):
     request_id = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
     notification = models.TextField(null=True, blank=True)

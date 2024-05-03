@@ -7,7 +7,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUsers
-        fields = ['email', 'phone_number', 'name', 'role', 'password', 'password2']
+        fields = ['id','email', 'name', 'phone_number', 'profile_photo' ,'role', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -15,10 +15,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def save(self):
         user = CustomUsers(
             email=self.validated_data['email'],
-            name=self.validated_data['name'],
+            name=self.validated_data.get('name', ''),
             phone_number=self.validated_data['phone_number'],
             profile_photo=self.validated_data.get('profile_photo', ''),
-            role=self.validated_data.get('role', 'guest')
+            country=self.validated_data.get('country', 'Ethiopia'),
+            region=self.validated_data.get('region', ''),
+            zone=self.validated_data.get('zone', ''),
+            woreda=self.validated_data.get('woreda', ''),
+            kebele=self.validated_data.get('kebele', ''),
+            role=self.validated_data.get('role', 'guest'),
+            user_status=self.validated_data.get('user_status', 'active')
         )
 
         password = self.validated_data['password']
