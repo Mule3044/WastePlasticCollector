@@ -135,3 +135,26 @@ class ChangePasswordView(APIView):
                 "message": "Failed to change password.",
                 "error": str(e)
                 }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = CustomUsers.objects.all()
+    serializer_class = CustomUsersUpdateSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response({
+                'success': True,
+                'message': 'User details retrieved successfully',
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve user details',
+                'error': str(e)
+            }, status=status.HTTP_404_NOT_FOUND)

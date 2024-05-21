@@ -5,6 +5,7 @@ PICK_UP_STATUS = [
     ('approved', 'Approved'),
     ('pending', 'Pending'),
     ('canceled', 'Canceled'),
+    ('completed', 'Completed'),
 ]
 AGENT_STATUS = [
     ('accept', 'Accept'),
@@ -16,6 +17,11 @@ REQUEST_HISTORY = [
     ('pending', 'Pending'),
     ('completed', 'Completed'),
     ('canceled', 'Canceled'),
+]
+
+ASSIGN_STATUS = [
+    ('asign', 'Asign'),
+    ('take back', 'Take back'),
 ]
 
 # Create your models here.
@@ -62,6 +68,12 @@ class RequestPickUp(models.Model):
     agent_status = models.CharField(max_length=100, choices=AGENT_STATUS, default='pending')
 
 
+class TaskAssigned(models.Model):
+    requestId = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
+    userId = models.ForeignKey(CustomUsers, on_delete=models.CASCADE)
+    asign_status = models.CharField(max_length=100, choices=ASSIGN_STATUS, default='asign')
+
+
 
 class Notification(models.Model):
     request_id = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
@@ -69,3 +81,10 @@ class Notification(models.Model):
     
     def __str__(self):
         return self.notification
+
+class LookUp(models.Model):
+    unit_price = models.FloatField(default=1.0)
+    CO2_reducedValue = models.FloatField(default=1.0)
+    
+    def __str__(self):
+        return f"Unit Price: {self.unit_price}, CO2 Reduced Value: {self.CO2_reducedValue}"

@@ -7,7 +7,7 @@ from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
 from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp
 from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer
 from UserManagement.models import CustomUsers
 
@@ -259,6 +259,15 @@ class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    def get_queryset(self):
+        try:
+            requestor_id = self.kwargs.get('requestor_id')
+            role = self.kwargs.get('role')
+            queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role=role)
+            return queryset
+        except Exception as e:
+            return WastePlasticRequestor.objects.none()
+
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset().order_by('-request_date')[:10]
@@ -284,7 +293,8 @@ class FilterByRoleAndUserIdAPIView(generics.ListAPIView):
     def get_queryset(self):
         try:
             requestor_id = self.kwargs.get('requestor_id')
-            queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role='agent')
+            role = self.kwargs.get('role')
+            queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role=role)
             return queryset
         except Exception as e:
             return WastePlasticRequestor.objects.none()
@@ -296,12 +306,20 @@ class FilterByRoleAndUserIdAPIView(generics.ListAPIView):
             
             total_collection = sum(item['wastePlastic_size'] for item in serializer.data)
             carbon_emission = total_collection * 4.03239  # Conversion factor: 1kg of PET plastic = 4.03239kg of CO2
+
+            # Retrieve the unit_price from the LookUp table
+            lookup = get_object_or_404(LookUp)
+            unit_price = lookup.unit_price
+
+            # Calculate the reward
+            reward = total_collection * unit_price
             
             return Response({
                 'success': True,
                 'data': serializer.data,
                 'total_collection': total_collection,
-                'carbon_emission': carbon_emission
+                'carbon_emission': carbon_emission,
+                'reward': reward
             })
         except Exception as e:
             return Response({
