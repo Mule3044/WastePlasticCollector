@@ -45,6 +45,7 @@ class WastePlasticRequestor(models.Model):
     requestor = models.ForeignKey(CustomUsers,on_delete=models.CASCADE)
     wastePlastic_type = models.CharField(max_length=100)
     request_date = models.DateField(auto_now_add=True)
+    request_time = models.TimeField(auto_now_add=True)
     wastePlastic_size = models.PositiveIntegerField()
     wastePlastic_address = models.CharField(max_length=100, null=True, blank=True)
     unique_location = models.CharField(max_length=100, null=True, blank=True)

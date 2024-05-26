@@ -7,8 +7,8 @@ from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
 from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp
-from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned
+from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer
 from UserManagement.models import CustomUsers
 
 
@@ -371,6 +371,28 @@ class NotificationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
                 }, status=status.HTTP_400_BAD_REQUEST)
 
 
+class NotificationListAPIView(generics.ListAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve notification',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class RequestPickUpCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -421,3 +443,25 @@ class RequestPickUpUpdateAPIView(generics.RetrieveUpdateAPIView):
                 'message': 'Failed to update request pick up',
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TaskAssignedListAPIView(generics.ListAPIView):
+    queryset = TaskAssigned.objects.all()
+    serializer_class = TaskAssignedSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve task assigned data',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

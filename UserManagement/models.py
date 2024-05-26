@@ -11,6 +11,7 @@ from django.utils import timezone
 
 ROLES = [
     ('guest', 'Guest'),
+    ('client', 'Client'),
     ('agent', 'Agent'),
     ('admin', 'Admin'),
 ]

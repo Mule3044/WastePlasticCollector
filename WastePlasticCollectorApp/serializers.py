@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned
 
 class WastePlasticSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +10,7 @@ class WastePlasticSerializer(serializers.ModelSerializer):
 class WastePlasticRequestorSerializer(serializers.ModelSerializer):
     class Meta:
         model = WastePlasticRequestor
-        fields = ['id','requestor', 'wastePlastic_type', 'request_date', 'wastePlastic_size', 'wastePlastic_address', 'unique_location', 'latitude', 'longitude', 'pickUp_status']
+        fields = ['id','requestor', 'wastePlastic_type', 'request_date', 'request_time', 'wastePlastic_size', 'wastePlastic_address', 'unique_location', 'latitude', 'longitude', 'pickUp_status']
         read_only_fields = ['id', 'request_date']
 
 
@@ -22,4 +22,10 @@ class NotificationSerializer(serializers.ModelSerializer):
 class RequestPickUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestPickUp
+        fields = '__all__'
+
+
+class TaskAssignedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskAssigned
         fields = '__all__'
