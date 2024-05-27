@@ -7,6 +7,7 @@ from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
 from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned
 from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer
 from UserManagement.models import CustomUsers
@@ -285,7 +286,7 @@ class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
 
 
 
-class FilterByRoleAndUserIdAPIView(generics.ListAPIView):
+class HistoryAPIView(generics.ListAPIView):
     serializer_class = WastePlasticRequestorSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
