@@ -23,5 +23,5 @@ urlpatterns = [
     path('notifications/create/', views.NotificationListCreateView.as_view(), name='notification_create'),
     path('notifications/', views.NotificationListAPIView.as_view(), name='notification_list'),
     path('notifications/<int:pk>/', views.NotificationRetrieveUpdateDestroyView.as_view(), name='notification_detail'),
-    path('taskassigned/', views.TaskAssignedListAPIView.as_view(), name='taskassigned_list'),
+    path('taskassigned/<int:requestor_id>/', views.TaskAssignedListAPIView.as_view(), name='taskassigned_list'),
 ]

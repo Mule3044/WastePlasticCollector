@@ -452,9 +452,17 @@ class TaskAssignedListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    def get_queryset(self):
+        try:
+            requestor_id = self.kwargs.get('requestor_id')
+            queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role="agent")
+            return queryset
+        except Exception as e:
+            return WastePlasticRequestor.objects.none()
+
     def list(self, request, *args, **kwargs):
         try:
-            queryset = self.filter_queryset(self.get_queryset())
+            queryset = self.get_queryset()
             serializer = self.get_serializer(queryset, many=True)
             return Response({
                 'success': True,
