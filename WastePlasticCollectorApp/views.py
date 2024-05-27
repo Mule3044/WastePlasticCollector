@@ -14,7 +14,7 @@ from UserManagement.models import CustomUsers
 
 
 def index(request):
-    return render(request, 'WastePlasticCollectorApp/index.html')
+    return render(request, 'WastePlasticCollectorApp/base_template.html')
 
 class WastePlasticCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
