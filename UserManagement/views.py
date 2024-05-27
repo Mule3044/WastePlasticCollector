@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.generics import ListAPIView
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer, CustomUsersDetailSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 # from rest_framework.authtoken.models import Token
 from .models import CustomUsers
@@ -141,7 +141,7 @@ class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = CustomUsers.objects.all()
-    serializer_class = CustomUsersUpdateSerializer
+    serializer_class = CustomUsersDetailSerializer
 
     def retrieve(self, request, *args, **kwargs):
         try:

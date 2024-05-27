@@ -62,3 +62,9 @@ class CustomUsersUpdateSerializer(serializers.ModelSerializer):
         instance.role = validated_data.get('role', instance.role)
         instance.save()
         return instance
+
+
+class CustomUsersDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUsers
+        fields = '__all__'
