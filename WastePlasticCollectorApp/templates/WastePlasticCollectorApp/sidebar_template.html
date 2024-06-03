@@ -1,16 +1,21 @@
 {% load static %}
 
-<aside class="main-sidebar sidebar-white-primary">
+<aside class="main-sidebar sidebar-white-primary"  style="background: #FFFFFF;">
   <!-- Brand Logo -->
   <a href="#" class="brand-link">
     <img
-      src="{% static 'dist/img/AdminLTELogo.png' %}"
+      src="{% static 'dist/img/clenville_logo.jpg' %}"
       alt="AdminLTE Logo"
       class="brand-image"
       style="opacity: 0.8"
     />
-    <span class="brand-text font-weight-light"
-      >Waste Collection</span
+    <span class="brand-text font-weight-light" style="margin-left: 10px; margin-top: 5px; color: #303778;font-family: Poppins;
+font-size: 20px;
+font-weight: 900;
+line-height: 30px;
+letter-spacing: 0.05em;
+text-align: left;
+">Waste Collection</span
     >
   </a>
 
@@ -26,26 +31,26 @@
         data-accordion="false"
       >
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{% url 'dashboard' %}" class="nav-link  custom-hover">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chalkboard-teacher"></i>
+            <i class="nav-icon fas fa-user"></i>
             <p>User Management</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chalkboard-teacher"></i>
+            <i class="nav-icon fas fa-address-card"></i>
             <p>Agent Management</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chalkboard-teacher"></i>
+            <i class="nav-icon fas fa-archive"></i>
             <p>Collection Requests</p>
           </a>
         </li>
@@ -58,27 +63,27 @@
 
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-user-graduate"></i>
+            <i class="nav-icon fas fa-comment-dots"></i>
             <p>Feedback and Rating</p>
           </a>
         </li>
 
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chalkboard"></i>
+            <i class="nav-icon fas fa-chart-bar"></i>
             <p>Reports</p>
           </a>
         </li>
 
         <li class="nav-item">
           <a href="" class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
+            <i class="nav-icon fas fa-trophy"></i>
             <p>Points and Rewards</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-graduation-cap"></i>
+            <i class="nav-icon fas fa-bell"></i>
             <p>Notifications</p>
           </a>
         </li>

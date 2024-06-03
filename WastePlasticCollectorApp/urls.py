@@ -20,6 +20,7 @@ urlpatterns = [
     path('wasteplasticrequestor/requestpickup/create/', views.RequestPickUpCreateAPIView.as_view(), name='pickup_create'),
     path('wasteplasticrequestor/requestpickup/update/<int:pk>/', views.RequestPickUpUpdateAPIView.as_view(), name='pickup_update'),
     path('', views.index, name='index'),
+    path('dashboard/', views.dashboard_content, name='dashboard'),
     path('notifications/create/', views.NotificationListCreateView.as_view(), name='notification_create'),
     path('notifications/', views.NotificationListAPIView.as_view(), name='notification_list'),
     path('notifications/<int:pk>/', views.NotificationRetrieveUpdateDestroyView.as_view(), name='notification_detail'),

@@ -4,3 +4,6 @@ color: red;
 .nav-item:hover{
     color: red;
 }
+.nav-link.custom-hover {
+    color: #28a745;;
+}

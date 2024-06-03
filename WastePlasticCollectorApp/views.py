@@ -16,6 +16,18 @@ from UserManagement.models import CustomUsers
 def index(request):
     return render(request, 'WastePlasticCollectorApp/base_template.html')
 
+def dashboard_content(request):
+    all_user_count = CustomUsers.objects.all().count()
+    request_pickup_count = RequestPickUp.objects.all().count()
+    collection_count = WastePlasticRequestor.objects.all().count()
+
+    context={
+        "all_user_count": all_user_count,
+        "request_pickup_count": request_pickup_count,
+        "collection_count": collection_count,
+    }
+    return render(request, "WastePlasticCollectorApp/dashboard_content.html", context)
+
 class WastePlasticCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]

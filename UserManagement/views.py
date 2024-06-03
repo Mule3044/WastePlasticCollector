@@ -93,10 +93,11 @@ class LoginView(APIView):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            login(request, user)
+            login(request, user)            
             auth_data = get_tokens_for_user(request.user)
             response_data = {
                 'message': 'Login Success', 
+                'id': user.id, 
                 'username': user.email, 
                 'name': user.name,
                 'phone_number': user.phone_number,
