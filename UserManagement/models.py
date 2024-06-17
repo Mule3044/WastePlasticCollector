@@ -67,6 +67,8 @@ class CustomUsers(AbstractBaseUser):
     zone = models.CharField(max_length=100)
     woreda = models.CharField(max_length=100)
     kebele = models.CharField(max_length=100)
+    latitude = models.FloatField(max_length=50, null=True, blank=True)
+    longitude = models.FloatField(max_length=50, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLES, default='guest')

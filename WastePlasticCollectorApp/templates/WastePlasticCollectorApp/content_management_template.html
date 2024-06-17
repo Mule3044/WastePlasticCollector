@@ -1,0 +1,77 @@
+{% extends 'WastePlasticCollectorApp/base_template.html' %}
+{% block page_title %}
+    Content Management
+{% endblock page_title %}
+
+{% block header_title %}
+  Content Management
+{% endblock header_title %}
+{% block custom_css %}
+  <style>
+    .content{
+        margin-top: 10px;
+    }
+    .icon{
+      margin-right:170px;
+      background-color: red !important;
+      display: inline-block;
+    }
+    .inner{
+      margin-left:170px;
+    }
+    .icon-dashboard{
+      margin-right:170px;
+      color: #008080;
+    }
+    .card-info{
+      background-color:#008080;
+      color:white
+    }
+    .inner h4{
+      color: #303778
+    }
+    #header-title h2{
+      color: #00cc99;
+      font-weight: bold;
+    }
+    #header-title {
+      padding: 0 15px;
+    }
+    #card_body{
+      max-height: 200px;
+      min-height: 200px;
+    }
+    #card_body p{
+      max-height: 200px;
+      min-height: 200px;
+    }
+  </style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+          <!-- /.row -->
+            <div class="row">
+              {% for content in contents %}
+              <div class="col-lg-6">
+                <div class="card card-white"  id="header-title">
+                  <div class="card-header">
+                    <h2 class="card-title">{{ content.title }}</h2>
+                  </div>
+                  <div class="card-body" id="card_body">
+                    <p>{{ content.content }}</p>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              {% endfor %}
+            </div>
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

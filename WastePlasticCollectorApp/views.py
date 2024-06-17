@@ -1,17 +1,27 @@
 from rest_framework import generics
 from django.db.models import Q
+from django.db.models import Sum
+from django.db.models import Count
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.db.models.functions import Cast
+from django.db.models import FloatField
+from geopy.distance import geodesic
 from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
 from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement
 from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer
 from UserManagement.models import CustomUsers
 
+# def index(request):
+#     return render(request, 'WastePlasticCollectorApp/index.html')
+
+def home(request):
+    return render(request, 'WastePlasticCollectorApp/index.html')
 
 def index(request):
     return render(request, 'WastePlasticCollectorApp/base_template.html')
@@ -20,13 +30,88 @@ def dashboard_content(request):
     all_user_count = CustomUsers.objects.all().count()
     request_pickup_count = RequestPickUp.objects.all().count()
     collection_count = WastePlasticRequestor.objects.all().count()
+    latest_tasks = TaskAssigned.objects.all().order_by('-assigned_date')[:10]
+
+    collectedWastPlastcs = WastePlasticRequestor.objects.all()
+
+    total_collection = sum(item.wastePlastic_size for item in collectedWastPlastcs)
+    carbon_emission = total_collection * 4.03239  # Conversion factor: 1kg of PET plastic = 4.03239kg of CO2
+
+    # Retrieve the unit_price from the LookUp table
+    lookup = get_object_or_404(LookUp)
+    unit_price = lookup.unit_price
+
+    # Calculate the reward
+    reward = total_collection * unit_price
 
     context={
         "all_user_count": all_user_count,
         "request_pickup_count": request_pickup_count,
         "collection_count": collection_count,
+        "latest_tasks": latest_tasks,
+        "total_collection": total_collection,
+        "carbon_emission": carbon_emission,
+        "reward": reward
     }
     return render(request, "WastePlasticCollectorApp/dashboard_content.html", context)
+
+
+def user_management(request):
+    users = CustomUsers.objects.all()
+    # Sum wastePlastic_size by requestor
+    waste_plastic_sums = WastePlasticRequestor.objects.values('requestor').annotate(total_size=Sum('wastePlastic_size'))
+
+    # Create a dictionary to easily look up the sum by requestor
+    waste_plastic_sums_dict = {entry['requestor']: entry['total_size'] for entry in waste_plastic_sums}
+    context = {
+        "users": users,
+        "waste_plastic_sums": waste_plastic_sums_dict,
+    }
+    return render(request, "WastePlasticCollectorApp/user_manage_template.html", context)
+
+def agent_management(request):
+    agents = CustomUsers.objects.filter(role="agent")
+
+    # Aggregate wastePlastic_size by agent
+    agent_waste_sums = WastePlasticRequestor.objects.filter(requestor__in=agents).values('requestor__id').annotate(total_waste=Sum('wastePlastic_size'))
+
+    # Aggregate assigned tasks count by agent
+    agent_task_counts = TaskAssigned.objects.filter(userId__in=agents).values('userId__id').annotate(total_tasks=Count('id'))
+
+    # Create dictionaries to map agent IDs to their respective totals
+    agent_waste_dict = {entry['requestor__id']: entry['total_waste'] for entry in agent_waste_sums}
+    agent_task_count_dict = {entry['userId__id']: entry['total_tasks'] for entry in agent_task_counts}
+
+    context = {
+        "agents": agents,
+        "agent_waste_dict": agent_waste_dict,
+        "agent_task_count_dict": agent_task_count_dict,
+    }
+    return render(request, "WastePlasticCollectorApp/agent_manage_template.html", context)
+
+def collection_request(request):
+    assigned_agents = TaskAssigned.objects.all()
+
+    context = {
+        "assigned_agents": assigned_agents,
+    }
+    return render(request, "WastePlasticCollectorApp/collection_request_template.html", context)
+
+def feedback(request):
+    feedbaks = FeedBack.objects.all()
+
+    context = {
+        "feedbaks": feedbaks,
+    }
+    return render(request, "WastePlasticCollectorApp/feedback_template.html", context)
+
+def content_management(request):
+    contents = ContentManagement.objects.all()
+
+    context = {
+        "contents": contents,
+    }
+    return render(request, "WastePlasticCollectorApp/content_management_template.html", context)
 
 class WastePlasticCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -430,6 +515,40 @@ class RequestPickUpCreateAPIView(generics.ListCreateAPIView):
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
+class RequestPickUpByDistanceAPIView(generics.ListAPIView):
+    serializer_class = RequestPickUpSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        requestor_id = self.kwargs.get('requestor_id')
+        requestor = WastePlasticRequestor.objects.get(id=requestor_id)
+        requestor_coords = (requestor.latitude, requestor.longitude)
+        
+        # Annotate and order RequestPickUp instances by distance
+        return RequestPickUp.objects.all().annotate(
+            distance=Cast(
+                (requestor.latitude - models.F('latitude')) ** 2 + 
+                (requestor.longitude - models.F('longitude')) ** 2,
+                FloatField()
+            )
+        ).order_by('distance')[:3]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve request pickups by distance',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class RequestPickUpUpdateAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -486,3 +605,30 @@ class TaskAssignedListAPIView(generics.ListAPIView):
                 'message': 'Failed to retrieve task assigned data',
                 'error': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TaskAssignedUpdateAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = TaskAssigned.objects.all()
+    serializer_class = TaskAssignedSerializer
+    partial = True
+
+    def update(self, request, *args, **kwargs):
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response({
+                'success': True,
+                'message': 'Task assigned updated successfully',
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to update task assigned',
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)

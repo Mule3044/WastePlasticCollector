@@ -7,7 +7,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUsers
-        fields = ['id','email', 'name', 'phone_number', 'profile_photo' ,'role', 'password', 'password2']
+        fields = ['id','email', 'name', 'phone_number', 'profile_photo', 'latitude', 'longitude' ,'role', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -23,6 +23,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             zone=self.validated_data.get('zone', ''),
             woreda=self.validated_data.get('woreda', ''),
             kebele=self.validated_data.get('kebele', ''),
+            latitude=self.validated_data.get('latitude', ''),
+            longitude=self.validated_data.get('longitude', ''),
             role=self.validated_data.get('role', 'guest'),
             user_status=self.validated_data.get('user_status', 'active')
         )
@@ -64,7 +66,19 @@ class CustomUsersUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
+class AgentLocationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUsers
+        fields = ['id','latitude', 'longitude']
+
+    def update(self, instance, validated_data):
+        instance.latitude = validated_data.get('latitude', instance.latitude)
+        instance.longitude = validated_data.get('longitude', instance.longitude)
+        instance.save()
+        return instance
+
+
 class CustomUsersDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUsers
-        fields = ['id','email', 'name', 'phone_number', 'profile_photo', 'country', 'region', 'zone', 'woreda', 'kebele', 'role', 'user_status']
+        fields = ['id','email', 'name', 'phone_number', 'profile_photo', 'country', 'region', 'zone', 'woreda', 'kebele', 'latitude', 'longitude', 'role', 'user_status']

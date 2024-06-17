@@ -1,0 +1,124 @@
+{% extends 'WastePlasticCollectorApp/base_template.html' %}
+
+{% block page_title %}
+    Collection Request Management
+{% endblock page_title %}
+
+{% block header_title %}
+  Collection Request Management
+{% endblock header_title %}
+
+{% block custom_css %}
+  <style>
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgb(240, 247, 247);
+    }
+    .table-striped tbody tr:nth-of-type(even) {
+      background-color: white;
+    }
+    .table {
+      border-collapse: collapse;
+    }
+    .table td, .table th {
+      border: none;
+    }
+    .content{
+        margin-top: 10px;
+    }
+    .btn{
+      background-color: #009999;  
+      border: none;
+    }
+  </style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_filters %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                                        
+
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                <div class="input-group-append">
+                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                <th>Request ID</th>
+                                <th>Name</th>
+                                <th>Phone number</th>
+                                <th>Address</th>
+                                <th>Assigned Agent</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assigned_agent in assigned_agents %}
+                                <tr>
+                                <td>{{ assigned_agent.id }}</td>
+                                <td>{{ assigned_agent.userId.name }}</td>
+                                <td>{{ assigned_agent.userId.phone_number }}</td>
+                                <td>{{ assigned_agent.userId.region }}</td>
+                                <td>{{ assigned_agent.userId.name}}</td>
+                                <td>{{ assigned_agent.task_status }}</td>
+                                <td><a href="#">Verified</a></td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

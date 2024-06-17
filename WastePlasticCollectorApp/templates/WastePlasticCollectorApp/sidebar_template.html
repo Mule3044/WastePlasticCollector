@@ -1,6 +1,46 @@
-{% load static %}
+{% block custom_css %}
+<style>
+  .fa-solid {
+    font-size: 26px;
+  }
 
-<aside class="main-sidebar sidebar-white-primary"  style="background: #FFFFFF;">
+  .fa-solid[data-count]:after {
+    position: absolute;
+    left: 12%;
+    top: 20%;
+    content: attr(data-count);
+    font-size: 30%;
+    padding: 0.6em;
+    border-radius: 999px;
+    line-height: 0.75em;
+    color: white;
+    background: red;
+    text-align: center;
+    min-width: 2em;
+    font-weight: bold;
+  }
+  .brand-link {
+      text-decoration: none;
+      margin-top: 5px;
+      color: #303778;
+      font-family: Poppins;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 30px;
+      letter-spacing: 0.05em;
+      text-align: left;
+  }
+  .nav-link:hover,
+  .nav-link.active p {
+    color: #00b386;
+    font-weight: bold;
+  }
+
+</style>
+
+{% endblock %} {% load static %}
+
+<aside class="main-sidebar sidebar-white-primary" style="background: #ffffff">
   <!-- Brand Logo -->
   <a href="#" class="brand-link">
     <img
@@ -9,13 +49,8 @@
       class="brand-image"
       style="opacity: 0.8"
     />
-    <span class="brand-text font-weight-light" style="margin-left: 10px; margin-top: 5px; color: #303778;font-family: Poppins;
-font-size: 20px;
-font-weight: 900;
-line-height: 30px;
-letter-spacing: 0.05em;
-text-align: left;
-">Waste Collection</span
+    <span
+      class="brand-text">We Collect</span
     >
   </a>
 
@@ -31,78 +66,147 @@ text-align: left;
         data-accordion="false"
       >
         <li class="nav-item">
-          <a href="{% url 'dashboard' %}" class="nav-link  custom-hover">
+          {% url 'dashboard' as dashboard %}
+          <a href="{{ dashboard }}" class="nav-link {% if request.path == dashboard %}active{% endif %}">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          {% url 'user_manage' as user_manage %}
+          <a href="{{ user_manage }}" class="nav-link" id="nav-link {% if request.path == user_manage %}active{% endif %}">
             <i class="nav-icon fas fa-user"></i>
             <p>User Management</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          {% url 'agent_manage' as agent_manage %}
+          <a href="{{ agent_manage }}" class="nav-link" id="nav-link {% if request.path == agent_manage %}active{% endif %}">
             <i class="nav-icon fas fa-address-card"></i>
             <p>Agent Management</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          {% url 'collection_request' as collection_request %}
+          <a href="{{ collection_request }}" class="nav-link" id="nav-link {% if request.path == collection_request %}active{% endif %}">
             <i class="nav-icon fas fa-archive"></i>
             <p>Collection Requests</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          {% url 'content_management' as content_management %}
+          <a href="{{ content_management }}" class="nav-link" id="nav-link {% if request.path == content_management %}active{% endif %}">
             <i class="nav-icon fas fa-chalkboard-teacher"></i>
             <p>Content Management</p>
           </a>
         </li>
 
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          {% url 'feedback' as feedback %}
+          <a href="{{ feedback }}" class="nav-link" id="nav-link {% if request.path == feedback %}active{% endif %}">
             <i class="nav-icon fas fa-comment-dots"></i>
             <p>Feedback and Rating</p>
           </a>
         </li>
 
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="#" class="nav-link" id="nav-link">
             <i class="nav-icon fas fa-chart-bar"></i>
             <p>Reports</p>
           </a>
         </li>
 
         <li class="nav-item">
-          <a href="" class="nav-link">
+          <a href="" class="nav-link" id="nav-link">
             <i class="nav-icon fas fa-trophy"></i>
             <p>Points and Rewards</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-bell"></i>
+        <li class="nav-item dropdown dropdown-menu-start">
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="dropdown"
+            aria-expanded="false" 
+            id="nav-link"
+          >
+            <i id="bellCount" class="fa-solid fa-bell" data-count="0"></i>
             <p>Notifications</p>
           </a>
+          <ul
+            class="dropdown-menu dropdown-menu-dark text-wrap"
+            id="notify"
+            style="width: 300px !important"
+          ></ul>
         </li>
       </ul>
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      <div class="image">
-        <img
-          src="{% static 'dist/img/user2-160x160.jpg' %}"
-          class="img-circle elevation-2"
-          alt="User Image"
-        />
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img
+            src="{% static 'dist/img/user2-160x160.jpg' %}"
+            class="img-circle elevation-2"
+            alt="User Image"
+          />
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">AA</a>
+        </div>
       </div>
-      <div class="info">
-        <a href="#" class="d-block">AA</a>
-      </div>
-    </div>
     </nav>
 
     <!-- /.sidebar-menu -->
   </div>
   <!-- /.sidebar -->
 </aside>
+{% block custom_js %}
+<script>
+  // setup chat scoket
+  const notifyScoket = new WebSocket(
+    "ws://" + window.location.host + "/ws/notify/"
+  );
+
+  // on socket open
+  notifyScoket.onopen = function (e) {
+    console.log("Socket successfully connected.");
+  };
+
+  // on socket close
+  notifyScoket.onclose = function (e) {
+    console.log("Socket closed unexpectedly");
+  };
+
+  // on receiving message on group
+  notifyScoket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    const message = data.message;
+    // Call the setMessage function to add the new li element
+    setMessage(message);
+  };
+
+  function setMessage(message) {
+    // Create a new li element
+    var newLi = document.createElement("li");
+
+    // Create a new anchor element
+    var newAnchor = document.createElement("a");
+    newAnchor.className = "dropdown-item text-wrap";
+    newAnchor.href = "#";
+    newAnchor.textContent = message;
+
+    // Append the anchor element to the li element
+    newLi.appendChild(newAnchor);
+
+    // Get the ul element with the id "notify"
+    var ulElement = document.getElementById("notify");
+
+    // Append the new li element to the ul element
+    ulElement.appendChild(newLi);
+
+    // getting object of count
+    count = document.getElementById("bellCount").getAttribute("data-count");
+    document
+      .getElementById("bellCount")
+      .setAttribute("data-count", parseInt(count) + 1);
+  }
+</script>
+{% endblock %}
