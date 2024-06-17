@@ -32,9 +32,33 @@
   }
   .nav-link:hover,
   .nav-link.active p {
-    color: #00b386;
+    color: #00b386 !important;
     font-weight: bold;
+    background-color: #ffffff !important;
   }
+  
+{% comment %} 
+  .nav-item {
+    background-color: #ffffff !important;
+  }
+
+  .nav-item:hover {
+    background-color: #ffffff !important;
+    color: #00b386 !important;
+  }
+
+  .nav-item.active {
+    background-color: #ffffff !important;
+  } {% endcomment %}
+
+  .nav-item .nav-link:hover {
+    background-color: #ffffff !important;
+    color: #00b386 !important;
+  }
+  .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color:  #00b386 !important;
+    background-color: #ffffff !important;
+}
 
 </style>
 

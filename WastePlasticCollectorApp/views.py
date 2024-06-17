@@ -515,6 +515,28 @@ class RequestPickUpCreateAPIView(generics.ListCreateAPIView):
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
+class RequestPickUpListAPIView(generics.ListAPIView):
+    queryset = RequestPickUp.objects.all()
+    serializer_class = RequestPickUpSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class RequestPickUpByDistanceAPIView(generics.ListAPIView):
     serializer_class = RequestPickUpSerializer
     permission_classes = [permissions.IsAuthenticated]
