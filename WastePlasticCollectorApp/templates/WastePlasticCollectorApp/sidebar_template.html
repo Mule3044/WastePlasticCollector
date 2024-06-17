@@ -30,33 +30,15 @@
       letter-spacing: 0.05em;
       text-align: left;
   }
-  .nav-link:hover,
-  .nav-link.active p {
-    color: #00b386 !important;
-    font-weight: bold;
-    background-color: #ffffff !important;
-  }
   
-{% comment %} 
-  .nav-item {
-    background-color: #ffffff !important;
-  }
-
-  .nav-item:hover {
-    background-color: #ffffff !important;
-    color: #00b386 !important;
-  }
-
-  .nav-item.active {
-    background-color: #ffffff !important;
-  } {% endcomment %}
-
   .nav-item .nav-link:hover {
     background-color: #ffffff !important;
+    font-weight: bold;
     color: #00b386 !important;
   }
   .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     color:  #00b386 !important;
+    font-weight: bold;
     background-color: #ffffff !important;
 }
 
@@ -98,28 +80,28 @@
         </li>
         <li class="nav-item">
           {% url 'user_manage' as user_manage %}
-          <a href="{{ user_manage }}" class="nav-link" id="nav-link {% if request.path == user_manage %}active{% endif %}">
+          <a href="{{ user_manage }}" class="nav-link {% if request.path == user_manage %}active{% endif %}">
             <i class="nav-icon fas fa-user"></i>
             <p>User Management</p>
           </a>
         </li>
         <li class="nav-item">
           {% url 'agent_manage' as agent_manage %}
-          <a href="{{ agent_manage }}" class="nav-link" id="nav-link {% if request.path == agent_manage %}active{% endif %}">
+          <a href="{{ agent_manage }}" class="nav-link {% if request.path == agent_manage %}active{% endif %}">
             <i class="nav-icon fas fa-address-card"></i>
             <p>Agent Management</p>
           </a>
         </li>
         <li class="nav-item">
           {% url 'collection_request' as collection_request %}
-          <a href="{{ collection_request }}" class="nav-link" id="nav-link {% if request.path == collection_request %}active{% endif %}">
+          <a href="{{ collection_request }}" class="nav-link {% if request.path == collection_request %}active{% endif %}">
             <i class="nav-icon fas fa-archive"></i>
             <p>Collection Requests</p>
           </a>
         </li>
         <li class="nav-item">
           {% url 'content_management' as content_management %}
-          <a href="{{ content_management }}" class="nav-link" id="nav-link {% if request.path == content_management %}active{% endif %}">
+          <a href="{{ content_management }}" class="nav-link {% if request.path == content_management %}active{% endif %}">
             <i class="nav-icon fas fa-chalkboard-teacher"></i>
             <p>Content Management</p>
           </a>
@@ -127,21 +109,21 @@
 
         <li class="nav-item">
           {% url 'feedback' as feedback %}
-          <a href="{{ feedback }}" class="nav-link" id="nav-link {% if request.path == feedback %}active{% endif %}">
+          <a href="{{ feedback }}" class="nav-link {% if request.path == feedback %}active{% endif %}">
             <i class="nav-icon fas fa-comment-dots"></i>
             <p>Feedback and Rating</p>
           </a>
         </li>
 
         <li class="nav-item">
-          <a href="#" class="nav-link" id="nav-link">
+          <a href="#" class="nav-link">
             <i class="nav-icon fas fa-chart-bar"></i>
             <p>Reports</p>
           </a>
         </li>
 
         <li class="nav-item">
-          <a href="" class="nav-link" id="nav-link">
+          <a href="" class="nav-link">
             <i class="nav-icon fas fa-trophy"></i>
             <p>Points and Rewards</p>
           </a>

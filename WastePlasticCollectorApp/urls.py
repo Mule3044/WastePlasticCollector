@@ -19,6 +19,7 @@ urlpatterns = [
     path('wasteplasticrequestor/history/<int:requestor_id>/<str:role>/', views.HistoryAPIView.as_view(), name='filter_by_role'),
     path('wasteplasticrequestor/requestpickup/create/', views.RequestPickUpCreateAPIView.as_view(), name='pickup_create'),
     path('wasteplasticrequestor/requestpickup/', views.RequestPickUpListAPIView.as_view(), name='pickup_list'),
+    path('wasteplasticrequestor/requestpickup/<int:requestor_id>/', views.RequestPickUpByIdListAPIView.as_view(), name='pickup_list_by_id'),
     path('wasteplasticrequestor/filterByDistance/<int:requestor_id>/', views.RequestPickUpByDistanceAPIView.as_view(), name='filter_by_distance'),
     path('wasteplasticrequestor/requestpickup/update/<int:pk>/', views.RequestPickUpUpdateAPIView.as_view(), name='pickup_update'),
     path('notifications/create/', views.NotificationListCreateView.as_view(), name='notification_create'),

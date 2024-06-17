@@ -537,6 +537,36 @@ class RequestPickUpListAPIView(generics.ListAPIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class RequestPickUpByIdListAPIView(generics.ListAPIView):
+    queryset = RequestPickUp.objects.all()
+    serializer_class = RequestPickUpSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        try:
+            requestor_id = self.kwargs.get('requestId')
+            queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role="agent")
+            return queryset
+        except Exception as e:
+            return WastePlasticRequestor.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class RequestPickUpByDistanceAPIView(generics.ListAPIView):
     serializer_class = RequestPickUpSerializer
     permission_classes = [permissions.IsAuthenticated]
