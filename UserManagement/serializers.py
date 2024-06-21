@@ -47,6 +47,12 @@ class PasswordChangeSerializer(serializers.Serializer):
             raise serializers.ValidationError({'current_password': 'Does not match'})
         return value
 
+class CustomUsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUsers
+        fields = ['email', 'name', 'phone_number', 'role', 'user_status']
+
+
 class CustomUsersUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUsers

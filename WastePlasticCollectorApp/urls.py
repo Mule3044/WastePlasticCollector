@@ -27,11 +27,13 @@ urlpatterns = [
     path('notifications/<int:pk>/', views.NotificationRetrieveUpdateDestroyView.as_view(), name='notification_detail'),
     path('taskassigned/<int:requestor_id>/', views.TaskAssignedListAPIView.as_view(), name='taskassigned_list'),
     path('taskassigned/update/<int:requestor_id>/', views.TaskAssignedUpdateAPIView.as_view(), name='taskassigned_update'),
+    path('contentManagement/', views.ContentManagementListAPIView.as_view(), name='content_management'),
+
 
     #Dashboard
-    path('', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('home/', views.home, name='home'),
-    path('dashboard/', views.dashboard_content, name='dashboard'),
+    path('', views.dashboard_content, name='dashboard'),
     path('users/', views.user_management, name='user_manage'),
     path('agents/', views.agent_management, name='agent_manage'),
     path('collection-request/', views.collection_request, name='collection_request'),

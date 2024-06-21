@@ -14,7 +14,7 @@ from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement
-from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer
+from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -684,3 +684,25 @@ class TaskAssignedUpdateAPIView(generics.RetrieveUpdateAPIView):
                 'message': 'Failed to update task assigned',
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ContentManagementListAPIView(generics.ListAPIView):
+    queryset = ContentManagement.objects.all()
+    serializer_class = ContentManagementSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

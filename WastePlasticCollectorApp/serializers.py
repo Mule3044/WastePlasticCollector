@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned, ContentManagement
+from UserManagement.serializers import CustomUsersSerializer
 
 class WastePlasticSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,6 +9,7 @@ class WastePlasticSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'collection_date']
 
 class WastePlasticRequestorSerializer(serializers.ModelSerializer):
+    requestor = CustomUsersSerializer()
     class Meta:
         model = WastePlasticRequestor
         fields = '__all__'
@@ -27,4 +29,10 @@ class RequestPickUpSerializer(serializers.ModelSerializer):
 class TaskAssignedSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskAssigned
+        fields = '__all__'
+
+
+class ContentManagementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContentManagement
         fields = '__all__'
