@@ -1,42 +1,91 @@
 {% extends 'WastePlasticCollectorApp/base.html' %}
 {% block title %}Login{% endblock %}
+{% block css %}
+<style>
+ 
+  .login-text {
+    margin-top: 5px;
+    color: #303778;
+    font-weight: bold;
+    margin-left: 13%;
+  }
+  .img-fluid{
+    margin-left: 0%;
+    width: 100%;
+    height: 100%;
+  }
+  .login{
+    color: #009973;
+  }
+  .btn-login{
+    color: white;
+    background: #009973;
+  }
+  .btn-login:hover{
+    color: white;
+    background: #00b386;
+  }
+  .logo-img{
+    margin-left: 20%;
+  }
+  .logo-img img{
+    width: 20%;
+    height: 20%;
+  }
+</style>
+
+{% endblock %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center">Login</h1>
-    <div class="row justify-content-center">
+<div class="container mt-0">
+    <div class="row">
+        <div class="col-lg-6">
+            <img src="{% static 'UserManagement/image/garbage-trash.jpg' %}" alt="login logo" class="login-image img-fluid" />
+        </div>
         <div class="col-md-6">
+            <div class="mb-1 mt-5 logo-img">
+                <img src="{% static 'dist/img/clenville_logo.jpg' %}"
+                alt="AdminLTE Logo" />
+            </div>
+            <div class="mb-1">
+                <h1 class="login-text">We Collect</h1>
+            </div><br><br>
+            <h1 class="text-bold login">Login</h1>
+            <p>Login into your account!</p>
             <form id="loginForm" method="post" action="{% url 'UserManagement:login' %}">
                 {% csrf_token %}
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" name="username" id="username" class="form-control" required>
+                <div class="mb-4 form-group row">
+                    <div class="col-md-8">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" required>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
+                <div class="mb-4 form-group row">
+                    <div class="col-md-8">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Login</button>
+                <div class="row">
+                    <div class="col-md-8">
+                        <button type="submit" class="btn btn-login form-control">Login</button>
+                    </div>
+                </div>
             </form>
-            <p>Don't have an account? <a href="{% url 'UserManagement:register' %}">Register here</a></p>
+            <p>Not a user yet? <a href="{% url 'UserManagement:register' %}">Request credentials</a></p>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}
 
-{% block js_script %}
+{% block custom_js %}
 <script>
     document.getElementById("loginForm").addEventListener("submit", function(event) {
-        // Prevent default form submission behavior
         event.preventDefault();
-
-        // Fetch form data
         const formData = new FormData(event.target);
-
-        // Fetch login endpoint URL
         const url = event.target.action;
 
-        // Fetch options for the fetch request
         const options = {
             method: "POST",
             body: formData,
@@ -45,12 +94,10 @@
             }
         };
 
-        // Send fetch request to login endpoint
         fetch(url, options)
             .then(response => {
                 if (response.ok) {
-                    // Redirect to the index page upon successful login
-                    window.location.href = "http://localhost:8000/api/home/";
+                    window.location.href = "{% url 'dashboard' %}";
                 } else {
                     console.error('Login failed:', response.statusText);
                 }
@@ -58,4 +105,4 @@
             .catch(error => console.error('Error during login:', error));
     });
 </script>
-{% endblock %}
+{% endblock custom_js %}

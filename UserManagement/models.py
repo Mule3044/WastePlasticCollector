@@ -71,6 +71,7 @@ class CustomUsers(AbstractBaseUser):
     longitude = models.FloatField(max_length=50, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_orginization = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLES, default='guest')
     user_status = models.CharField(max_length=20, choices=USER_STATUS, default='active')
 

@@ -1,10 +1,10 @@
 {% extends 'WastePlasticCollectorApp/base_template.html' %}
 {% block page_title %}
-    Dashboard
+    Report
 {% endblock page_title %}
 
 {% block header_title %}
-  Dashboard
+  Report
 {% endblock header_title %}
 {% block custom_css %}
   <style>
@@ -40,86 +40,36 @@
 
 <section class="content">
         <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-9">
-          <!-- Small boxes (Stat box) -->
-          <div class="row">
-            <div class="col-lg-4 col-4">
-              <!-- small box -->
-              <div class="small-box bg-white">
-                <div class="inner"> 
-                  <p>Users</p>
-                  <h4>{{ all_user_count }}</h4>
-                </div>
-                <div class="icon">
-                  <i class="nav-icon icon-dashboard fas fa-user"></i>
-                </div>
-                <a href="#" class="small-box-footer bg-white">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            <div class="col-lg-4 col-4">
-              <!-- small box -->
-              <div class="small-box bg-white">
-                <div class="inner">
-                  <p>Points Issued</p>
-                  <h4>{{ collection_count }}</h4>
-                </div>
-                <div class="icon">
-                  <i class="icon-dashboard fas fa-server"></i>
-                </div>
-                <a href="#" class="small-box-footer bg-white">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            <div class="col-lg-4 col-4">
-              <!-- small box -->
-              <div class="small-box bg-white">
-                <div class="inner">
-                  <p>Requests</p>
-                  <h4>{{ request_pickup_count }}</h4>
-                </div>
-                <div class="icon">
-                  <i class="icon-dashboard fas fa-file"></i>
-                </div>
-                <a href="#" class="small-box-footer bg-white">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            
-          </div>
           <!-- /.row -->
           <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-6">
               <!-- PIE CHART -->
               <div class="card card-white">
                 <div class="card-header">
-                  <h3 class="card-title">Active Users</h3>
+                  <h3 class="card-title">Active Users</h3><br>
                   <p style="font-weight:bold;">{{assigned_task_count}}</p>
                 </div>
                 <div class="card-body">
-                  <canvas id="activityChart" width="400" height="200"></canvas>
+                  <canvas id="activityChart" width="400" height="150"></canvas>
                 </div>
                 <!-- /.card-body -->
               </div>
               <!-- /.card -->
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <!-- DONUT CHART -->
-              <div class="card card-info">
-                {% comment %} <div class="card-header">
-                  <h3 class="card-title">#</h3>
-                </div> {% endcomment %}
+              <div class="card card-white">
+                <div class="card-header">
+                  <h3 class="card-title">Active Users</h3><br>
+                  <p style="font-weight:bold;">{{assigned_task_count}}</p>
+                </div>
                 <div class="card-body">
-                  <h4>CO2 Reduced</h4>
-                  <p>{{ carbon_emission }} kg</p>
-                  <h4>Total weight collected</h4>
-                  <p>{{total_collection}} kg</p>
-                  <h4>Recycled plastics</h4>
-                  <p>600 kg</p>
+                  <canvas id="activityChart1" width="400" height="150"></canvas>
                 </div>
                 <!-- /.card-body -->
               </div>
               <!-- /.card -->
-              
             </div>
           </div>
 
@@ -131,34 +81,45 @@
                   <h3 class="card-title">Enviromental Trends</h3>
                 </div>
                 <div class="card-body">
-                  <canvas id="monthlyChart" width="400" height="200"></canvas>
+                  <canvas id="monthlyChart" width="400" height="100"></canvas>
                 </div>
                 <!-- /.card-body -->
                 </div>
             </div>
           </div>
-        </div>
-            <div class="col-lg-3">
+
+          <div class="row">
+            <div class="col-lg-6">
               <!-- PIE CHART -->
               <div class="card card-white">
                 <div class="card-header">
-                  <h3 class="card-title">Latest pickup history</h3>
+                  <h3 class="card-title">Active Users</h3><br>
+                  <p style="font-weight:bold;">{{assigned_task_count}}</p>
                 </div>
                 <div class="card-body">
-                  {% for latest_task in latest_tasks %}
-                    {% if latest_task.task_status == 'on progress' %}
-                        <h4>Garbage Not Collected</h4>
-                    {% elif latest_task.task_status == 'completed' %}
-                        <h4>Garbage Collected</h4>
-                    {% endif %}
-                  <p>Date:{{ latest_task.assigned_date }} Time: {{ latest_task.assigned_time }}</p>
-                  {% endfor %}
+                  <canvas id="activityChart" width="400" height="150"></canvas>
                 </div>
                 <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+
+            <div class="col-lg-6">
+              <!-- DONUT CHART -->
+              <div class="card card-white">
+                <div class="card-header">
+                  <h3 class="card-title">Active Users</h3><br>
+                  <p style="font-weight:bold;">{{assigned_task_count}}</p>
                 </div>
+                <div class="card-body">
+                  <canvas id="activityChart1" width="400" height="150"></canvas>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
             </div>
           </div>
-          </div>
+
         </div><!-- /.container-fluid -->
       </section>
     {% block custom_js %}
@@ -189,9 +150,33 @@
                 }
             }
         });
-
-        var ctx = document.getElementById('monthlyChart').getContext('2d');
-        var chart = new Chart(ctx, {
+        var ctx1 = document.getElementById('activityChart1').getContext('2d');
+        var chart1 = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: {{ days|safe }},
+                datasets: [{
+                    label: 'Total Waste Plastic Size (kg)',
+                    data: {{ counts|safe }},
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true,
+                        min: 0  // Ensure Y-axis starts at 0
+                    }
+                }
+            }
+        });
+        var ctxBar = document.getElementById('monthlyChart').getContext('2d');
+        var chart = new Chart(ctxBar, {
             type: 'bar',
             data: {
                 labels: {{ months|safe }},

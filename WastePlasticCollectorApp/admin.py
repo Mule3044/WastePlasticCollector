@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Notification, WastePlasticRequestor, LookUp, ContentManagement, RequestPickUp
+from .models import Notification, WastePlasticRequestor, LookUp, ContentManagement, RequestPickUp, WastePlasticType
 
 # Register your models here.
 admin.site.register(Notification)
@@ -13,4 +13,9 @@ class RequestPickUpAdmin(admin.ModelAdmin):
     search_fields = ('requestId__id', 'userId__name', 'agent_status')
 
 admin.site.register(RequestPickUp, RequestPickUpAdmin)
+
+class WastePlasticTypeAdmin(admin.ModelAdmin):
+    list_filter = ('type',)
+
+admin.site.register(WastePlasticType, WastePlasticTypeAdmin)
 

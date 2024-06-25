@@ -36,6 +36,13 @@ TASK_STATUS = [
 
 
 # Create your models here.
+class WastePlasticType(models.Model):
+    type = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.type
+
+
 class WastePlastic(models.Model):
     user = models.ForeignKey(CustomUsers,on_delete=models.CASCADE)
     wastePlastic_type = models.CharField(max_length=100)
@@ -54,7 +61,7 @@ class WastePlastic(models.Model):
 
 class WastePlasticRequestor(models.Model):
     requestor = models.ForeignKey(CustomUsers,on_delete=models.CASCADE)
-    wastePlastic_type = models.CharField(max_length=100)
+    wastePlastic_type = models.ForeignKey(WastePlasticType,on_delete=models.CASCADE, null=True, blank=True)
     request_date = models.DateField(default=timezone.now)
     request_time = models.TimeField(default=timezone.now)
     wastePlastic_size = models.PositiveIntegerField()
@@ -67,13 +74,13 @@ class WastePlasticRequestor(models.Model):
     pickUp_status=models.CharField(max_length=100, choices=PICK_UP_STATUS, default='pending')
 
     def __str__(self):
-        return self.wastePlastic_type
+        return self.wastePlastic_address
     @property
     def get_id(self):
         return self.id
     @property
     def get_name(self):
-        return self.wastePlastic_type
+        return self.wastePlastic_address
 
 class RequestPickUp(models.Model):
     requestId = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
@@ -94,7 +101,9 @@ class TaskAssigned(models.Model):
 
 
 class Notification(models.Model):
-    wastePlasticRequest = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
+    requestId = models.ForeignKey(WastePlasticRequestor, on_delete=models.CASCADE)
+    userId = models.ForeignKey(CustomUsers, on_delete=models.CASCADE, default=1)
+    title = models.CharField(max_length=100, null=True, blank=True)
     message = models.CharField(max_length=100)
     
     def __str__(self):

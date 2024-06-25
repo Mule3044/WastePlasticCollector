@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -39,4 +41,7 @@ urlpatterns = [
     path('collection-request/', views.collection_request, name='collection_request'),
     path('feedback/', views.feedback, name='feedback'),
     path('content/', views.content_management, name='content_management'),
+    path('report/', views.report_content, name='report'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

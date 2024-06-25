@@ -83,6 +83,8 @@ class CustomUsersUpdateAPIView(generics.RetrieveUpdateAPIView):
 
 
 class LoginView(APIView):
+    def get(self, request):
+        return render(request, 'UserManagement/login.html')
     def post(self, request):
         if 'username' not in request.data or 'password' not in request.data:
             return Response({'message': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
