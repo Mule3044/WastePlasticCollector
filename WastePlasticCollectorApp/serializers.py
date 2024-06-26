@@ -8,7 +8,13 @@ class WastePlasticSerializer(serializers.ModelSerializer):
         fields = ['user', 'wastePlastic_type', 'collection_date', 'wastePlastic_size', 'pickUp_status']
         read_only_fields = ['id', 'collection_date']
 
-class WastePlasticRequestorSerializer(serializers.ModelSerializer):
+class WastePlasticRequestorCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WastePlasticRequestor
+        fields = '__all__'
+
+class WastePlasticRequestorListSerializer(serializers.ModelSerializer):
     requestor = CustomUsersSerializer()
     class Meta:
         model = WastePlasticRequestor

@@ -16,7 +16,7 @@ from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement
-from .serializers import WastePlasticSerializer, WastePlasticRequestorSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer
+from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -346,7 +346,7 @@ class WastePlasticRequestorCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorCreateSerializer
 
     def create(self, request, *args, **kwargs):
         try:
@@ -369,7 +369,7 @@ class WastePlasticRequestorCreateAPIView(generics.ListCreateAPIView):
 
 class WastePlasticRequestorListAPIView(generics.ListAPIView):
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -393,7 +393,7 @@ class WastePlasticRequestorDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorListSerializer
 
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -416,7 +416,7 @@ class WastePlasticRequestorUpdateAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorCreateSerializer
     partial = True
 
     def update(self, request, *args, **kwargs):
@@ -443,7 +443,7 @@ class WastePlasticRequestorDeleteAPIView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorCreateSerializer
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -462,7 +462,7 @@ class WastePlasticRequestorDeleteAPIView(generics.DestroyAPIView):
 
 class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -493,7 +493,7 @@ class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
 
 
 class HistoryAPIView(generics.ListAPIView):
-    serializer_class = WastePlasticRequestorSerializer
+    serializer_class = WastePlasticRequestorCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
