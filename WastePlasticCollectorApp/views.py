@@ -15,8 +15,8 @@ from rest_framework.response import Response
 from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement
-from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement, WastePlasticType
+from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -601,6 +601,35 @@ class NotificationListAPIView(generics.ListAPIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class NotificationListByUserAPIView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        try:
+            user_id = self.kwargs.get('user_id')
+            queryset = Notification.objects.filter(userId_id=user_id)
+            return queryset
+        except Exception as e:
+            return Notification.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve notifications',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class RequestPickUpCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -799,6 +828,28 @@ class TaskAssignedUpdateAPIView(generics.RetrieveUpdateAPIView):
 class ContentManagementListAPIView(generics.ListAPIView):
     queryset = ContentManagement.objects.all()
     serializer_class = ContentManagementSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({
+                'success': True,
+                'data': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to retrieve',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class WastePlasticTypeListAPIView(generics.ListAPIView):
+    queryset = WastePlasticType.objects.all()
+    serializer_class = WastePlasticTypeSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 

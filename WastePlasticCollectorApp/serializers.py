@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned, ContentManagement
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned, ContentManagement, WastePlasticType
 from UserManagement.serializers import CustomUsersSerializer
 
 class WastePlasticSerializer(serializers.ModelSerializer):
@@ -41,4 +41,10 @@ class TaskAssignedSerializer(serializers.ModelSerializer):
 class ContentManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentManagement
+        fields = '__all__'
+
+
+class WastePlasticTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WastePlasticType
         fields = '__all__'

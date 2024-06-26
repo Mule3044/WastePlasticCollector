@@ -27,9 +27,11 @@ urlpatterns = [
     path('notifications/create/', views.NotificationListCreateView.as_view(), name='notification_create'),
     path('notifications/', views.NotificationListAPIView.as_view(), name='notification_list'),
     path('notifications/<int:pk>/', views.NotificationRetrieveUpdateDestroyView.as_view(), name='notification_detail'),
+    path('notificationsByUser/<int:user_id>/', views.NotificationListByUserAPIView.as_view(), name='notification_list_byUser'),
     path('taskassigned/<int:requestorId_id>/', views.TaskAssignedListAPIView.as_view(), name='taskassigned_list'),
     path('taskassigned/update/<int:requestor_id>/', views.TaskAssignedUpdateAPIView.as_view(), name='taskassigned_update'),
     path('contentManagement/', views.ContentManagementListAPIView.as_view(), name='content_management'),
+    path('wastePlasticType/', views.WastePlasticTypeListAPIView.as_view(), name='wastePlastic_type'),
 
 
     #Dashboard
