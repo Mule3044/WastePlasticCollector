@@ -747,7 +747,7 @@ class TaskAssignedListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         try:
-            requestor_id = self.kwargs.get('requestId')
+            requestor_id = self.kwargs.get('requestId_id')
             queryset = WastePlasticRequestor.objects.filter(requestor_id=requestor_id, requestor__role="agent")
             return queryset
         except Exception as e:
