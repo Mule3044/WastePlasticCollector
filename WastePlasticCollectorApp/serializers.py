@@ -33,7 +33,7 @@ class RequestPickUpSerializer(serializers.ModelSerializer):
 
 
 class RequestPickUpListSerializer(serializers.ModelSerializer):
-    requestor = CustomUsersSerializer()
+    requestId = CustomUsersSerializer()
     class Meta:
         model = RequestPickUp
         fields = '__all__'
