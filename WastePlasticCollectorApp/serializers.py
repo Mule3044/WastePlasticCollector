@@ -34,12 +34,21 @@ class RequestPickUpSerializer(serializers.ModelSerializer):
 
 class RequestPickUpListSerializer(serializers.ModelSerializer):
     userId = CustomUsersSerializer()
+    requestId = WastePlasticRequestorListSerializer()
     class Meta:
         model = RequestPickUp
         fields = '__all__'
 
 
 class TaskAssignedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskAssigned
+        fields = '__all__'
+
+
+class TaskAssignedListSerializer(serializers.ModelSerializer):
+    userId = CustomUsersSerializer()
+    requestId = WastePlasticRequestorListSerializer()
     class Meta:
         model = TaskAssigned
         fields = '__all__'

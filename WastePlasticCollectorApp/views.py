@@ -16,7 +16,7 @@ from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement, WastePlasticType
-from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer
+from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer, TaskAssignedListSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -770,7 +770,7 @@ class RequestPickUpUpdateAPIView(generics.RetrieveUpdateAPIView):
 
 class TaskAssignedListAPIView(generics.ListAPIView):
     queryset = TaskAssigned.objects.all()
-    serializer_class = TaskAssignedSerializer
+    serializer_class = TaskAssignedListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
