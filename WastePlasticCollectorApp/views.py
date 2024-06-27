@@ -16,7 +16,7 @@ from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement, WastePlasticType
-from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer
+from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -462,7 +462,7 @@ class WastePlasticRequestorDeleteAPIView(generics.DestroyAPIView):
 
 class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
     queryset = WastePlasticRequestor.objects.all()
-    serializer_class = WastePlasticRequestorCreateSerializer
+    serializer_class = WastePlasticRequestorListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -493,7 +493,7 @@ class FilterByLatestWastPlasticRequestorAPIView(generics.ListAPIView):
 
 
 class HistoryAPIView(generics.ListAPIView):
-    serializer_class = WastePlasticRequestorCreateSerializer
+    serializer_class = WastePlasticRequestorListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -656,7 +656,7 @@ class RequestPickUpCreateAPIView(generics.ListCreateAPIView):
 
 class RequestPickUpListAPIView(generics.ListAPIView):
     queryset = RequestPickUp.objects.all()
-    serializer_class = RequestPickUpSerializer
+    serializer_class = RequestPickUpListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -678,7 +678,7 @@ class RequestPickUpListAPIView(generics.ListAPIView):
 
 class RequestPickUpByIdListAPIView(generics.ListAPIView):
     queryset = RequestPickUp.objects.all()
-    serializer_class = RequestPickUpSerializer
+    serializer_class = RequestPickUpListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -707,7 +707,7 @@ class RequestPickUpByIdListAPIView(generics.ListAPIView):
 
 
 class RequestPickUpByDistanceAPIView(generics.ListAPIView):
-    serializer_class = RequestPickUpSerializer
+    serializer_class = RequestPickUpListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
