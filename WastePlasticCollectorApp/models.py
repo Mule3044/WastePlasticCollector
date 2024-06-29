@@ -37,7 +37,7 @@ TASK_STATUS = [
 
 # Create your models here.
 class WastePlasticType(models.Model):
-    type = models.CharField(max_length=100, null=True, blank=True)
+    type = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
         return self.type
@@ -65,13 +65,13 @@ class WastePlasticRequestor(models.Model):
     request_date = models.DateField(default=timezone.now)
     request_time = models.TimeField(default=timezone.now)
     wastePlastic_size = models.PositiveIntegerField()
-    wastePlastic_address = models.CharField(max_length=100, null=True, blank=True)
-    unique_location = models.CharField(max_length=100, null=True, blank=True)
-    latitude = models.FloatField(max_length=50, null=True, blank=True)
-    longitude = models.FloatField(max_length=50, null=True, blank=True)
+    wastePlastic_address = models.CharField(max_length=250, null=True, blank=True)
+    unique_location = models.CharField(max_length=250, null=True, blank=True)
+    latitude = models.FloatField(max_length=100, null=True, blank=True)
+    longitude = models.FloatField(max_length=100, null=True, blank=True)
     waste_plastic_photo = models.ImageField(upload_to='wastPlastic_photos/', null=True, blank=True)
     message = models.TextField(null=True, blank=True)
-    pickUp_status=models.CharField(max_length=100, choices=PICK_UP_STATUS, default='pending')
+    pickUp_status=models.CharField(max_length=250, choices=PICK_UP_STATUS, default='pending')
 
     def __str__(self):
         return self.wastePlastic_address
