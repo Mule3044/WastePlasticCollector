@@ -16,7 +16,7 @@ from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement, WastePlasticType
-from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer, TaskAssignedListSerializer
+from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer, TaskAssignedListSerializer, NotificationListSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -581,7 +581,7 @@ class NotificationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
 
 class NotificationListAPIView(generics.ListAPIView):
     queryset = Notification.objects.all()
-    serializer_class = NotificationSerializer
+    serializer_class = NotificationListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -602,7 +602,7 @@ class NotificationListAPIView(generics.ListAPIView):
 
 
 class NotificationListByUserAPIView(generics.ListAPIView):
-    serializer_class = NotificationSerializer
+    serializer_class = NotificationListSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 

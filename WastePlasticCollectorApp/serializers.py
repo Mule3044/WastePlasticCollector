@@ -7,7 +7,7 @@ class WastePlasticTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WastePlasticType
         fields = '__all__'
-        
+
 
 class WastePlasticSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,6 +30,12 @@ class WastePlasticRequestorListSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
+
+class NotificationListSerializer(serializers.ModelSerializer):
+    userId = CustomUsersSerializer()
     class Meta:
         model = Notification
         fields = '__all__'
