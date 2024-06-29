@@ -57,7 +57,7 @@ class WastePlastic(models.Model):
         return self.id
     @property
     def get_name(self):
-        return self.wastePlastic_type+" "+self.wastePlastic_size
+        return self.wastePlastic_type+" "+ self.wastePlastic_size
 
 class WastePlasticRequestor(models.Model):
     requestor = models.ForeignKey(CustomUsers,on_delete=models.CASCADE)
@@ -67,8 +67,8 @@ class WastePlasticRequestor(models.Model):
     wastePlastic_size = models.PositiveIntegerField()
     wastePlastic_address = models.CharField(max_length=250, null=True, blank=True)
     unique_location = models.CharField(max_length=250, null=True, blank=True)
-    latitude = models.FloatField(max_length=100, null=True, blank=True)
-    longitude = models.FloatField(max_length=100, null=True, blank=True)
+    latitude = models.FloatField(max_length=250, null=True, blank=True)
+    longitude = models.FloatField(max_length=250, null=True, blank=True)
     waste_plastic_photo = models.ImageField(upload_to='wastPlastic_photos/', null=True, blank=True)
     message = models.TextField(null=True, blank=True)
     pickUp_status=models.CharField(max_length=250, choices=PICK_UP_STATUS, default='pending')
