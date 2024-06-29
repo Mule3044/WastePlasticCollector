@@ -33,51 +33,48 @@ def find_nearest_agent(requestor):
     return nearest_agent, min_distance
 
 @receiver(post_save, sender=WastePlasticRequestor)
-def waste_plastic_requestor_created_or_updated(sender, instance, created, **kwargs):
-    # Find the nearest agent
-    nearest_agent, distance = find_nearest_agent(instance)
-    if nearest_agent:
-        # Create or update a RequestPickUp record
-        request_pickup, created = RequestPickUp.objects.get_or_create(
-            requestId=instance,
-            defaults={
-                'userId': nearest_agent,
-                'agent_status': 'pending'
-            }
-        )
-        if not created:
-            request_pickup.userId = nearest_agent
-            request_pickup.save()
+def waste_plastic_requestor_created(sender, instance, created, **kwargs):
+    if created:
+        # Find the nearest agent
+        nearest_agent, distance = find_nearest_agent(instance)
+        if nearest_agent:
+            # Create a RequestPickUp record
+            request_pickup = RequestPickUp.objects.create(
+                requestId=instance,
+                userId=nearest_agent,
+                agent_status='pending'
+            )
 
-        # Create or update a TaskAssigned record
-        task_assigned, created = TaskAssigned.objects.get_or_create(
-            requestId=instance,
-            defaults={
-                'userId': nearest_agent,
-                'asign_status': 'asign',
-                'task_status': 'on progress',
-                'assigned_date': timezone.now().date(),
-                'assigned_time': timezone.now().time()
-            }
-        )
-        if not created:
-            task_assigned.userId = nearest_agent
-            task_assigned.assigned_date = timezone.now().date()
-            task_assigned.assigned_time = timezone.now().time()
-            task_assigned.save()
+            # Create a TaskAssigned record
+            task_assigned = TaskAssigned.objects.create(
+                requestId=instance,
+                userId=nearest_agent,
+                asign_status='asign',
+                task_status='on progress',
+                assigned_date=timezone.now().date(),
+                assigned_time=timezone.now().time()
+            )
 
-        # Prepare the notification message
-        message = f'A new waste plastic request has been made by {instance.requestor.name}. The distance to the requestor is approximately {distance:.2f} km.'
+            # Prepare the notification message
+            message = f'A new waste plastic request has been made by {instance.requestor.name}. The distance to the requestor is approximately {distance:.2f} km.'
 
-        # Send notification using Django Channels
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            'public_room',
-            {
-                "type": "send_notification",
-                "message": message
-            }
-        )
+            # Register the notification in the Notification table
+            Notification.objects.create(
+                requestId=instance,
+                userId=nearest_agent,
+                title='New Waste Plastic Request',
+                message=message
+            )
+
+            # Send notification using Django Channels
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'public_room',
+                {
+                    "type": "send_notification",
+                    "message": message
+                }
+            )
 
 
 @receiver(post_save, sender=RequestPickUp)

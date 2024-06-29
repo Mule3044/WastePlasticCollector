@@ -50,7 +50,7 @@ class PasswordChangeSerializer(serializers.Serializer):
 class CustomUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUsers
-        fields = ['email', 'name', 'phone_number', 'role', 'user_status']
+        fields = ['id', 'email', 'name', 'phone_number', 'role', 'user_status']
 
 
 class CustomUsersUpdateSerializer(serializers.ModelSerializer):
