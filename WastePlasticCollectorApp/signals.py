@@ -69,7 +69,7 @@ def waste_plastic_requestor_created(sender, instance, created, **kwargs):
             # Send notification using Django Channels
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
-                'public_room',
+                f'user_{nearest_agent.id}',
                 {
                     "type": "send_notification",
                     "message": message

@@ -164,9 +164,8 @@
 {% block custom_js %}
 <script>
   // setup chat scoket
-  const notifyScoket = new WebSocket(
-    "ws://" + window.location.host + "/ws/notify/"
-  );
+  const userId = {{ request.user.id }};
+  const notifyScoket = new WebSocket(`ws://${window.location.host}/ws/notify/${userId}/`);
 
   // on socket open
   notifyScoket.onopen = function (e) {
