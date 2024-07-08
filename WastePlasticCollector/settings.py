@@ -91,6 +91,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'UserManagement.middleware.JWTAuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'WastePlasticCollector.urls'
