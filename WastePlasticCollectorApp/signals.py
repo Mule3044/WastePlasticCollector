@@ -48,7 +48,7 @@ def waste_plastic_requestor_created(sender, instance, created, **kwargs):
             # Create a TaskAssigned record
             task_assigned = TaskAssigned.objects.create(
                 requestId=instance,
-                userId=nearest_agent,
+                userId=instance.requestor,
                 asign_status='asign',
                 task_status='on progress',
                 assigned_date=timezone.now().date(),

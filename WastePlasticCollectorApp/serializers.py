@@ -61,6 +61,8 @@ class TaskAssignedSerializer(serializers.ModelSerializer):
 
 class TaskAssignedListSerializer(serializers.ModelSerializer):
     userId = CustomUsersSerializer()
+    requestId = WastePlasticRequestorCreateSerializer()
+
     class Meta:
         model = TaskAssigned
         fields = '__all__'
