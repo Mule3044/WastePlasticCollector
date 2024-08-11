@@ -4,7 +4,10 @@
 {% endblock page_title %}
 
 {% block header_title %}
-  Content Management
+<div class="d-flex justify-content-between align-items-end">
+  <span>Content Management</span>
+  <a class="btn btn-add btn-primary" href="#" role="button" onclick="openNewArticleModal()">+ New Article</a>
+</div>
 {% endblock header_title %}
 {% block custom_css %}
   <style>
@@ -37,13 +40,38 @@
     #header-title {
       padding: 0 15px;
     }
-    #card_body{
+    .card-body {
       max-height: 200px;
       min-height: 200px;
+      overflow: hidden;
+      position: relative;
     }
-    #card_body p{
-      max-height: 200px;
-      min-height: 200px;
+    .card-body.expanded {
+      max-height: none;
+    }
+    .read-more {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(to top, white, rgba(255, 255, 255, 0));
+      text-align: center;
+      cursor: pointer;
+      padding: 5px 0;
+      background-color: white;
+      color: #4d94ff;
+    }
+    .btn-add{
+      background-color: #009999;  
+      border: none;
+      margin-left: 800px;
+    }
+    .btn{
+      background-color: #009999;  
+      border: none;
+    }
+    .modal-title{
+      color: #00cc99;
+      font-weight: bold;
     }
   </style>
 {% endblock custom_css %}
@@ -61,17 +89,102 @@
                 <div class="card card-white"  id="header-title">
                   <div class="card-header">
                     <h2 class="card-title">{{ content.title }}</h2>
-                  </div>
-                  <div class="card-body" id="card_body">
+                  </div>                 
+                  <div class="card-body" id="card_body_{{ forloop.counter }}">
                     <p>{{ content.content }}</p>
+                    <button class="btn btn-primary" onclick="openEditModal('{{ content.id }}', '{{ content.title }}', '{{ content.content|escapejs }}')">Edit</button>
+                    <form method="post" action="{% url 'delete_content_management' content.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <div class="read-more" onclick="toggleReadMore('{{ forloop.counter }}')">Read More</div>
                   </div>
-                  <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
               </div>
               {% endfor %}
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
       </section>
+    
+      <!-- Modal Structure -->
+      <div id="newArticleModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">New Article</h5>
+              <button type="button" class="close" id="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="newArticleForm" method="post" action="{% url 'create_content_management' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="title">Title</label>
+                  <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                  <label for="content">Content</label>
+                  <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
   {% endblock main_content %}
+
+  {% block custom_js %}
+    <script>
+      function toggleReadMore(counter) {
+        var cardBody = document.getElementById('card_body_' + counter);
+        var readMoreDiv = cardBody.querySelector('.read-more');
+        
+        if (cardBody.classList.contains('expanded')) {
+          cardBody.classList.remove('expanded');
+          readMoreDiv.textContent = 'Read More';
+        } else {
+          cardBody.classList.add('expanded');
+          readMoreDiv.textContent = 'Read Less';
+        }
+      }
+
+      // Function to open the modal
+      function openNewArticleModal() {
+          var modal = document.getElementById('newArticleModal');
+          modal.style.display = 'block';
+          // Reset form for new article
+          document.getElementById('newArticleForm').reset();
+          document.getElementById('newArticleForm').action = "{% url 'create_content_management' %}";
+          document.querySelector('.modal-title').textContent = "New Article";
+      }
+
+      // Function to open the edit modal
+      function openEditModal(id, title, content) {
+          var modal = document.getElementById('newArticleModal');
+          modal.style.display = 'block';
+          document.getElementById('title').value = title;
+          document.getElementById('content').value = content;
+          document.getElementById('newArticleForm').action = "{% url 'update_content_management' id %}".replace('id', id);
+          document.querySelector('.modal-title').textContent = "Edit Article";
+      }
+
+      // Function to close the modal
+      function closeModal() {
+          var modal = document.getElementById('newArticleModal');
+          modal.style.display = 'none';
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function(event) {
+          var modal = document.getElementById('newArticleModal');
+          if (event.target == modal) {
+              modal.style.display = 'none';
+          }
+      }
+    </script>
+  {% endblock custom_js %}

@@ -1,18 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import status, authentication, permissions
+from rest_framework import generics, status, authentication, permissions
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import  Response
 from rest_framework.views import APIView
-from rest_framework import generics
 from rest_framework.generics import ListAPIView
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer, CustomUsersDetailSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer, CustomUsersDetailSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 # from rest_framework.authtoken.models import Token
 from .models import CustomUsers
@@ -54,7 +53,7 @@ class UserListView(ListAPIView):
     serializer_class = RegistrationSerializer
 
 
-class CustomUsersUpdateAPIView(generics.RetrieveUpdateAPIView):
+class CustomUsersUpdateAPIView(LoginRequiredMixin, generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = CustomUsers.objects.all()
@@ -97,7 +96,7 @@ class LoginView(APIView):
         if user is not None:
             login(request, user)            
             auth_data = get_tokens_for_user(request.user)
-            response_data = {
+            response = Response({
                 'message': 'Login Success', 
                 'id': user.id, 
                 'username': user.email, 
@@ -106,8 +105,13 @@ class LoginView(APIView):
                 'profile_photo': user.profile_photo.url if user.profile_photo else None,
                 'user_status': user.user_status,
                 'role': user.role,
-                **auth_data}
-            return Response(response_data, status=status.HTTP_200_OK)
+                **auth_data}, status=status.HTTP_200_OK)
+
+            # Set tokens as cookies
+            response.set_cookie('access_token', auth_data['access_token'], httponly=True)
+            response.set_cookie('refresh_token', auth_data['refresh_token'], httponly=True)
+
+            return response
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
       
 class LogoutView(APIView):
@@ -161,3 +165,27 @@ class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
                 'message': 'Failed to retrieve user details',
                 'error': str(e)
             }, status=status.HTTP_404_NOT_FOUND)
+
+
+class PasswordResetRequestView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'message': 'Password reset link sent'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'message': 'Password reset successful'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

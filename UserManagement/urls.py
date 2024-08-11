@@ -1,8 +1,9 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import RegistrationView, LoginView, LogoutView,ChangePasswordView, UserListView, CustomUsersUpdateAPIView, UserDetailAPIView
+from .views import RegistrationView, LoginView, LogoutView,ChangePasswordView, UserListView, CustomUsersUpdateAPIView, UserDetailAPIView, PasswordResetRequestView, PasswordResetConfirmView
 from rest_framework_simplejwt import views as jwt_views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 app_name = 'UserManagement'
 
@@ -15,6 +16,9 @@ urlpatterns = [
     path('logout', LogoutView.as_view(), name='logout'),
     path('change-password', ChangePasswordView.as_view(), name='change_password'),
     path('token-refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('password-reset/', PasswordResetRequestView.as_view(), name='password-reset-request'),
+    path('password-reset-confirm/', PasswordResetConfirmView.as_view(), name='password-reset-confirm'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

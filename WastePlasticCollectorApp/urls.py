@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView 
 from . import views
 
 urlpatterns = [
@@ -43,7 +44,12 @@ urlpatterns = [
     path('collection-request/', views.collection_request, name='collection_request'),
     path('feedback/', views.feedback, name='feedback'),
     path('content/', views.content_management, name='content_management'),
+    path('content/create/', views.create_content_management, name='create_content_management'),
+    path('content/update/<int:id>/', views.update_content_management, name='update_content_management'),
+    path('content/delete/<int:id>/', views.delete_content_management, name='delete_content_management'),
     path('report/', views.report_content, name='report'),
+    path('feedback/create/', views.register_feedback, name='register_feedback'),
+    path('feedback/success/', TemplateView.as_view(template_name='WastePlasticCollectorApp/feedback_success.html'), name='feedback_success'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

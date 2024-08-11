@@ -11,13 +11,21 @@
 {% block custom_css %}
   <style>
     .table-striped tbody tr:nth-of-type(odd) {
-      background-color: rgb(240, 247, 247);
+      background-color: #ffffff !important;
     }
     .table-striped tbody tr:nth-of-type(even) {
-      background-color: white;
+      
+      background-color: rgb(240, 247, 247) !important;;
+    }
+    .table thead{
+      background-color: rgb(240, 247, 247) !important;;
+      border: none;
     }
     .table {
       border-collapse: collapse;
+      width: 98%;
+      margin: 1%;
+      --bs-table-striped-bg: white;
     }
     .table td, .table th {
       border: none;
@@ -27,6 +35,21 @@
     }
     .btn{
       background-color: #009999;  
+      border: none;
+    }
+    .gold {
+      color: gold;
+    }
+    .stars {
+      font-size: 0.8em;
+    }
+    .card{
+      background-color: white;  
+      box-shadow: none !important;
+      border: none;
+    }
+    .card-header{
+      background-color: white;  
       border: none;
     }
   </style>
@@ -46,9 +69,9 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                          <a class="btn btn-primary" href="#" role="button">+ Add Feedback</a> <br/>&nbsp;    
+                          <a class="btn btn-primary" href="{% url 'register_feedback' %}" role="button">+ Add Feedback</a> <br/>&nbsp;
 
-            {% if messages %}
+                                {% if messages %}
                                 <div class="form-group">
                                 <div class="col-12">
                                     {% for message in messages %}
@@ -87,7 +110,7 @@
                             <table class="table table-striped table-hover text-nowrap">
                             <thead>
                                 <tr>
-                                <th>ID</th>
+                                <th>No</th>
                                 <th>Agent</th>
                                 <th>Average Rating</th>
                                 <th>Date</th>
@@ -97,14 +120,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for feedback in feedbacks %}
+                                {% for feedback in feedbaks %}
                                 <tr>
-                                <td>{{ feedback.id }}</td>
-                                <td>{{ feedback.user_id.name }}</td>
-                                <td>{{ feedback.average_rating }}</td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ feedback.user_id__name  }}</td>
+                                <td>{{ feedback.average_rating|floatformat:2 }}/5</td>
                                 <td>{{ feedback.date }}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ feedback.total_feedback }}</td>
+                                <td class="stars">{{ feedback.average_rating|star_rating|safe }}</td>
                                 <td><a href="#">Verified</a></td>
                                 </tr>
                                 {% endfor %}

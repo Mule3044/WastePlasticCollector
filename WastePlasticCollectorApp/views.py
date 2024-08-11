@@ -1,10 +1,10 @@
 from rest_framework import generics
 from django.db.models import Q
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Avg, Max
 from django.utils import timezone
 from django.db.models.functions import TruncMonth, TruncDay
 import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.db.models.functions import Cast
@@ -14,7 +14,8 @@ from rest_framework import status, authentication, permissions
 from rest_framework.response import Response
 from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .forms import FeedbackForm
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement, WastePlasticType
 from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer, TaskAssignedListSerializer, NotificationListSerializer
 from UserManagement.models import CustomUsers
@@ -115,6 +116,9 @@ def dashboard_content(request):
     return render(request, "WastePlasticCollectorApp/dashboard_content.html", context)
 
 def report_content(request):
+    login_user = request.user
+    photo = login_user.profile_photo.url if login_user.profile_photo else None
+
     assigned_task_count = TaskAssigned.objects.filter(task_status='completed').count()
     today = timezone.now().date()
     one_week_ago = today - datetime.timedelta(days=7)
@@ -165,21 +169,30 @@ def report_content(request):
     }
     return render(request, "WastePlasticCollectorApp/report_template.html", context)
 
+@login_required
 def user_management(request):
-    users = CustomUsers.objects.all()
+    login_user = request.user
+    photo = login_user.profile_photo.url if login_user.profile_photo else None
+
+    users = CustomUsers.objects.all().order_by("id")
     # Sum wastePlastic_size by requestor
     waste_plastic_sums = WastePlasticRequestor.objects.values('requestor').annotate(total_size=Sum('wastePlastic_size'))
 
     # Create a dictionary to easily look up the sum by requestor
     waste_plastic_sums_dict = {entry['requestor']: entry['total_size'] for entry in waste_plastic_sums}
     context = {
+        "login_user": login_user,
+        "photo": photo,
         "users": users,
         "waste_plastic_sums": waste_plastic_sums_dict,
     }
     return render(request, "WastePlasticCollectorApp/user_manage_template.html", context)
 
 def agent_management(request):
-    agents = CustomUsers.objects.filter(role="agent")
+    login_user = request.user
+    photo = login_user.profile_photo.url if login_user.profile_photo else None
+
+    agents = CustomUsers.objects.filter(role="agent").order_by("id")
 
     # Aggregate wastePlastic_size by agent
     agent_waste_sums = WastePlasticRequestor.objects.filter(requestor__in=agents).values('requestor__id').annotate(total_waste=Sum('wastePlastic_size'))
@@ -192,6 +205,8 @@ def agent_management(request):
     agent_task_count_dict = {entry['userId__id']: entry['total_tasks'] for entry in agent_task_counts}
 
     context = {
+        "login_user": login_user,
+        "photo": photo,
         "agents": agents,
         "agent_waste_dict": agent_waste_dict,
         "agent_task_count_dict": agent_task_count_dict,
@@ -199,26 +214,101 @@ def agent_management(request):
     return render(request, "WastePlasticCollectorApp/agent_manage_template.html", context)
 
 def collection_request(request):
-    assigned_agents = TaskAssigned.objects.all()
+    login_user = request.user
+    photo = login_user.profile_photo.url if login_user.profile_photo else None
+
+    assigned_agents = TaskAssigned.objects.all().order_by("id")
 
     context = {
+        "login_user": login_user,
+        "photo": photo,
         "assigned_agents": assigned_agents,
     }
     return render(request, "WastePlasticCollectorApp/collection_request_template.html", context)
-
+    
+@login_required
 def feedback(request):
-    feedbaks = FeedBack.objects.all()
+    login_user = request.user
+    photo = login_user.profile_photo.url if login_user.profile_photo else None
+
+    feedbaks = FeedBack.objects.values('user_id__id', 'user_id__name').annotate(
+        total_feedback=Count('id'),
+        average_rating=Avg('average_rating'),
+        date=Max('date')
+    ).order_by("id")
 
     context = {
+        "login_user": login_user,
+        "photo": photo,
         "feedbaks": feedbaks,
     }
     return render(request, "WastePlasticCollectorApp/feedback_template.html", context)
 
+@login_required
+def register_feedback(request):
+    feedbaks = FeedBack.objects.all()
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user_id = request.user
+            feedback.save()
+            return redirect('feedback_success') 
+    else:
+        form = FeedbackForm()
+    
+    return render(request, 'WastePlasticCollectorApp/feedback_form.html', {'form': form, 'feedbaks': feedbaks})
+
+@login_required
 def content_management(request):
+    login_user = request.user
+    photo = login_user.profile_photo.url if login_user.profile_photo else None
+
     contents = ContentManagement.objects.all()
 
     context = {
+        "login_user": login_user,
+        "photo": photo,
         "contents": contents,
+    }
+    return render(request, "WastePlasticCollectorApp/content_management_template.html", context)
+
+
+def create_content_management(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        ContentManagement.objects.create(title=title, content=content)
+        return redirect("content_management")
+
+    return render(request, "WastePlasticCollectorApp/content_management_template.html")
+
+
+@login_required
+def update_content_management(request, id):
+    content_instance = get_object_or_404(ContentManagement, id=id)
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        content_instance.title = title
+        content_instance.content = content
+        content_instance.save()
+        return redirect("content_management")
+
+    context = {
+        "content_instance": content_instance,
+    }
+    return render(request, "WastePlasticCollectorApp/content_management_template.html", context)
+
+@login_required
+def delete_content_management(request, id):
+    content_instance = get_object_or_404(ContentManagement, id=id)
+    if request.method == "POST":
+        content_instance.delete()
+        return redirect("content_management")
+
+    context = {
+        "content_instance": content_instance,
     }
     return render(request, "WastePlasticCollectorApp/content_management_template.html", context)
 
