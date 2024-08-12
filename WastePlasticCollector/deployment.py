@@ -24,7 +24,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 connection_string = os.environ['AZURE_POSTGRESQL_CONNECTIONSTRING']
-parameters = {pair.split('=')[0]: pair.split('=')[1] for pair in connection_string.split(' ')}
+parameters = {}
+for item in connection_string.split(' '):
+    key, value = item.split('=', 1)  # Split only on the first '='
+    parameters[key] = value
 
 DATABASES = {
     'default': {
