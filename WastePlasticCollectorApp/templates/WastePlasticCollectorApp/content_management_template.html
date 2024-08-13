@@ -154,37 +154,38 @@
       }
 
       // Function to open the modal
-      function openNewArticleModal() {
-          var modal = document.getElementById('newArticleModal');
-          modal.style.display = 'block';
-          // Reset form for new article
-          document.getElementById('newArticleForm').reset();
-          document.getElementById('newArticleForm').action = "{% url 'create_content_management' %}";
-          document.querySelector('.modal-title').textContent = "New Article";
-      }
+function openNewArticleModal() {
+    var modal = document.getElementById('newArticleModal');
+    modal.style.display = 'block';
+    // Reset form for new article
+    document.getElementById('newArticleForm').reset();
+    document.getElementById('newArticleForm').action = "{% url 'create_content_management' %}";
+    document.querySelector('.modal-title').textContent = "New Article";
+}
 
-      // Function to open the edit modal
-      function openEditModal(id, title, content) {
-          var modal = document.getElementById('newArticleModal');
-          modal.style.display = 'block';
-          document.getElementById('title').value = title;
-          document.getElementById('content').value = content;
-          document.getElementById('newArticleForm').action = "{% url 'update_content_management' id %}".replace('id', id);
-          document.querySelector('.modal-title').textContent = "Edit Article";
-      }
+// Function to open the edit modal
+function openEditModal(id, title, content) {
+    var modal = document.getElementById('newArticleModal');
+    modal.style.display = 'block';
+    document.getElementById('title').value = title;
+    document.getElementById('content').value = content;
+    document.getElementById('newArticleForm').action = "{% url 'update_content_management' id=0 %}".replace('0', id);
+    document.querySelector('.modal-title').textContent = "Edit Article";
+}
 
-      // Function to close the modal
-      function closeModal() {
-          var modal = document.getElementById('newArticleModal');
-          modal.style.display = 'none';
-      }
+// Function to close the modal
+function closeModal() {
+    var modal = document.getElementById('newArticleModal');
+    modal.style.display = 'none';
+}
 
-      // Close modal when clicking outside of it
-      window.onclick = function(event) {
-          var modal = document.getElementById('newArticleModal');
-          if (event.target == modal) {
-              modal.style.display = 'none';
-          }
-      }
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    var modal = document.getElementById('newArticleModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
     </script>
   {% endblock custom_js %}
