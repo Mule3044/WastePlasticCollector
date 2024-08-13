@@ -38,7 +38,7 @@ urlpatterns = [
     #Dashboard
     path('index/', views.index, name='index'),
     path('home/', views.home, name='home'),
-    path('', views.dashboard_content, name='dashboard'),
+    path('dashboard/', views.dashboard_content, name='dashboard'),
     path('users/', views.user_management, name='user_manage'),
     path('agents/', views.agent_management, name='agent_manage'),
     path('collection-request/', views.collection_request, name='collection_request'),
