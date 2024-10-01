@@ -1,0 +1,96 @@
+{% extends 'WastePlasticCollectorApp/base_template.html' %}
+{% block page_title %}
+    Points and Rewards
+{% endblock page_title %}
+
+{% block header_title %}
+  Points and Rewards
+{% endblock header_title %}
+{% block custom_css %}
+  <style>
+    
+    .content{
+        margin-top: 10px;
+    }
+    .icon{
+      margin-right:170px;
+      background-color: red !important;
+      display: inline-block;
+    }
+    .inner{
+      margin-left:170px;
+    }
+    .icon-dashboard{
+      margin-right:270px;
+      color: #008080;
+    }
+    .card-info{
+      background-color:#008080;
+      color:white
+    }
+    .inner h4{
+      color: #303778
+    }
+  </style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-white">
+            <div class="inner"> 
+                <p>Points Issued</p>
+                <h4>{{ agent_waste_dict }}</h4>
+            </div>
+            <div class="icon">
+                <i class="icon-dashboard fas fa-file"></i>
+            </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-white">
+            <div class="inner">
+                <p>Points Reedemed</p>
+                <h4>{{ agent_waste_dict }}</h4>
+            </div>
+            <div class="icon">
+                <i class="icon-dashboard fas fa-file" style="color:yellow"></i>
+            </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-white">
+            <div class="inner">
+                <p>Remaining Points</p>
+                <h4>{{ agent_waste_dict }}</h4>
+            </div>
+            <div class="icon">
+                <i class="icon-dashboard fas fa-file" style="color:green"></i>
+            </div>
+            </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-lg-12">
+            <!-- PIE CHART -->
+            <div class="card card-white">
+            <div class="card-header">
+                <h3 class="card-title">Reward Management</h3>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">Card Body</h3>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>
+{% endblock main_content %}

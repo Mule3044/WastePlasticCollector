@@ -72,3 +72,11 @@ class ContentManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentManagement
         fields = '__all__'
+
+
+class MomoPaymentSerializer(serializers.Serializer):
+    amount = serializers.CharField(max_length=20)
+    currency = serializers.CharField(max_length=10)
+    partyId = serializers.CharField(max_length=20)
+    payerMessage = serializers.CharField(max_length=255, required=False)
+    payeeNote = serializers.CharField(max_length=255, required=False)

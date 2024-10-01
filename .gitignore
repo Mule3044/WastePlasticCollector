@@ -1,0 +1,35 @@
+# Django specific
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+*.sqlite3
+/media/
+/staticfiles/
+
+# If using PostgreSQL locally, you can ignore the following
+*.pgdata
+*.pgdump
+
+# Environments
+.env
+venv/
+env/
+ENV/
+.venv/
+
+# Virtualbox
+.vagrant/
+
+# macOS specific
+.DS_Store
+
+# Editor specific
+.vscode/
+.idea/
+.project
+.pydevproject
+.sublime-project
+.sublime-workspace
+

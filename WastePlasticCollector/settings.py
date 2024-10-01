@@ -39,7 +39,13 @@ SECRET_KEY = 'django-insecure-n&ejxsg)u00(9gz5^2&7!(e-6iavmll_@4pz2=(u7vcz%$)^v0
 # ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
 
 
 
@@ -95,7 +101,7 @@ SIMPLE_JWT = {
 }
 
 CSRF_COOKIE_HTTPONLY = False
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']  # Add your domain here
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 
 
@@ -155,30 +161,30 @@ TEMPLATES = [
     },
 ]
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        }
-    },
-    'formatters': {
-        'verbose': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
-            'datefmt': '%d/%b/%Y %H:%M:%S',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose',
+#         }
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
+#             'datefmt': '%d/%b/%Y %H:%M:%S',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     }
+# }
 
 WSGI_APPLICATION = 'WastePlasticCollector.wsgi.application'
 # 👇 4. Add the below line for asgi config
@@ -202,17 +208,31 @@ EMAIL_HOST_PASSWORD = 'exswfaucprkqjcgq'  # Sender email password
 # Add the URL of your frontend or where the password reset form is hosted
 PASSWORD_RESET_URL = 'http://your-frontend-url/reset-password'
 
+MOMO_API_URL = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
+MOMO_API_KEY = "f1db798c98df4bcf83b538175893bbf0"
+MOMO_SUBSCRIPTION_KEY = "d484a1f0d34f4301916d0f2c9e9106a2"
+MOMO_AUTH_TOKEN = ""
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'CleanDb',
+        'HOST': 'localhost',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
     }
 }
-
 # database_url = os.environ.get("DATABASE_URL")
 # DATABASES["default"] = dj_database_url.parse(database_url)
 
