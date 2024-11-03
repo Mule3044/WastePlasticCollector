@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned, ContentManagement, WastePlasticType
 from UserManagement.serializers import CustomUsersSerializer
 
@@ -20,6 +21,8 @@ class WastePlasticRequestorCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = WastePlasticRequestor
         fields = '__all__'
+
+
 
 class WastePlasticRequestorListSerializer(serializers.ModelSerializer):
     requestor = CustomUsersSerializer()

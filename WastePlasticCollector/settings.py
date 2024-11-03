@@ -40,6 +40,7 @@ SECRET_KEY = 'django-insecure-n&ejxsg)u00(9gz5^2&7!(e-6iavmll_@4pz2=(u7vcz%$)^v0
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+# ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
@@ -117,6 +118,7 @@ AUTHENTICATION_BACKENDS = [
 
 INSTALLED_APPS = [
     "daphne",
+    "channels",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -189,7 +191,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'WastePlasticCollector.wsgi.application'
 # 👇 4. Add the below line for asgi config
 ASGI_APPLICATION = 'WastePlasticCollector.asgi.application'
-
+# REDIS_HOST = '127.0.0.1'
+# REDIS_PORT = 6379
 
 # 👇 5. Add the below line for channel layer
 CHANNEL_LAYERS = {
@@ -197,6 +200,15 @@ CHANNEL_LAYERS = {
         'BACKEND': "channels.layers.InMemoryChannelLayer"
     }
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -229,6 +241,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'CleanDb',
         'HOST': 'localhost',
+        'PORT': '5432',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
     }
@@ -278,11 +291,11 @@ STATICFILES_DIRS = [
 ]
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
-STATIC_URL = '/static/'
+# STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+# STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

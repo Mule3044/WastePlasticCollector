@@ -163,6 +163,7 @@
   <!-- /.sidebar -->
 </aside>
 {% block custom_js %}
+
 <script>
   // setup chat scoket
   const userId = {{ request.user.id }};
@@ -212,4 +213,6 @@
       .setAttribute("data-count", parseInt(count) + 1);
   }
 </script>
+
+
 {% endblock %}
