@@ -39,14 +39,7 @@ SECRET_KEY = 'django-insecure-n&ejxsg)u00(9gz5^2&7!(e-6iavmll_@4pz2=(u7vcz%$)^v0
 # ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-# ALLOWED_HOSTS = ['*']
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
-
+ALLOWED_HOSTS = []
 
 
 
@@ -102,7 +95,7 @@ SIMPLE_JWT = {
 }
 
 CSRF_COOKIE_HTTPONLY = False
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']  # Add your domain here
 
 
 
@@ -118,7 +111,6 @@ AUTHENTICATION_BACKENDS = [
 
 INSTALLED_APPS = [
     "daphne",
-    "channels",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -163,36 +155,35 @@ TEMPLATES = [
     },
 ]
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose',
-#         }
-#     },
-#     'formatters': {
-#         'verbose': {
-#             'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
-#             'datefmt': '%d/%b/%Y %H:%M:%S',
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     }
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}
 
 WSGI_APPLICATION = 'WastePlasticCollector.wsgi.application'
 # 👇 4. Add the below line for asgi config
 ASGI_APPLICATION = 'WastePlasticCollector.asgi.application'
-# REDIS_HOST = '127.0.0.1'
-# REDIS_PORT = 6379
+
 
 # 👇 5. Add the below line for channel layer
 CHANNEL_LAYERS = {
@@ -200,15 +191,6 @@ CHANNEL_LAYERS = {
         'BACKEND': "channels.layers.InMemoryChannelLayer"
     }
 }
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("127.0.0.1", 6379)],
-#         },
-#     },
-# }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -220,32 +202,17 @@ EMAIL_HOST_PASSWORD = 'exswfaucprkqjcgq'  # Sender email password
 # Add the URL of your frontend or where the password reset form is hosted
 PASSWORD_RESET_URL = 'http://your-frontend-url/reset-password'
 
-MOMO_API_URL = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
-MOMO_API_KEY = "f1db798c98df4bcf83b538175893bbf0"
-MOMO_SUBSCRIPTION_KEY = "d484a1f0d34f4301916d0f2c9e9106a2"
-MOMO_AUTH_TOKEN = ""
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'CleanDb',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+
     }
 }
+
 # database_url = os.environ.get("DATABASE_URL")
 # DATABASES["default"] = dj_database_url.parse(database_url)
 
@@ -291,11 +258,11 @@ STATICFILES_DIRS = [
 ]
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
-# STATIC_URL = '/static/'
+STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
