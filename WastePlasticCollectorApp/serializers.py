@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.utils import timezone
 from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, TaskAssigned, ContentManagement, WastePlasticType
 from UserManagement.serializers import CustomUsersSerializer
 
@@ -21,8 +20,6 @@ class WastePlasticRequestorCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = WastePlasticRequestor
         fields = '__all__'
-
-
 
 class WastePlasticRequestorListSerializer(serializers.ModelSerializer):
     requestor = CustomUsersSerializer()
@@ -75,11 +72,3 @@ class ContentManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentManagement
         fields = '__all__'
-
-
-class MomoPaymentSerializer(serializers.Serializer):
-    amount = serializers.CharField(max_length=20)
-    currency = serializers.CharField(max_length=10)
-    partyId = serializers.CharField(max_length=20)
-    payerMessage = serializers.CharField(max_length=255, required=False)
-    payeeNote = serializers.CharField(max_length=255, required=False)

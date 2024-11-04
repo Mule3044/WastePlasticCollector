@@ -33,9 +33,6 @@ urlpatterns = [
     path('taskassigned/update/<int:requestor_id>/', views.TaskAssignedUpdateAPIView.as_view(), name='taskassigned_update'),
     path('contentManagement/', views.ContentManagementListAPIView.as_view(), name='content_management'),
     path('wastePlasticType/', views.WastePlasticTypeListAPIView.as_view(), name='wastePlastic_type'),
-    path('wastePlasticType/', views.WastePlasticTypeListAPIView.as_view(), name='wastePlastic_type'),
-    path('wastePlasticType/', views.WastePlasticTypeListAPIView.as_view(), name='wastePlastic_type'),
-    path('payment/', views.request_momo_payment, name='request_momo_payment'),
 
 
     #Dashboard
@@ -53,7 +50,6 @@ urlpatterns = [
     path('report/', views.report_content, name='report'),
     path('feedback/create/', views.register_feedback, name='register_feedback'),
     path('feedback/success/', TemplateView.as_view(template_name='WastePlasticCollectorApp/feedback_success.html'), name='feedback_success'),
-    path('pointsAndReward/', views.pointsAndRewards, name='points_and_rewards'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

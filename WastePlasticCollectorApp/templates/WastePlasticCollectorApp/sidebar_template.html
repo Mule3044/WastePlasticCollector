@@ -124,8 +124,7 @@
         </li>
 
         <li class="nav-item">
-          {% url 'points_and_rewards' as points_and_rewards %}
-          <a href="{{ points_and_rewards }}" class="nav-link {% if request.path == points_and_rewards %}active{% endif %}">
+          <a href="" class="nav-link">
             <i class="nav-icon fas fa-trophy"></i>
             <p>Points and Rewards</p>
           </a>
@@ -163,7 +162,6 @@
   <!-- /.sidebar -->
 </aside>
 {% block custom_js %}
-
 <script>
   // setup chat scoket
   const userId = {{ request.user.id }};
@@ -213,6 +211,4 @@
       .setAttribute("data-count", parseInt(count) + 1);
   }
 </script>
-
-
 {% endblock %}

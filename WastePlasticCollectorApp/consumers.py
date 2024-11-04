@@ -1,4 +1,3 @@
-
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -20,16 +19,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        try:
-            # Parse the incoming text_data as JSON
-            text_data_json = json.loads(text_data)
-            message = text_data_json.get('message', '')
-
-            # Echo the received message back
-            await self.send(text_data=json.dumps({'message': f"Received: {message}"}))
-
-        except json.JSONDecodeError:
-            await self.send(text_data=json.dumps({'error': 'Invalid JSON received'}))
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        await self.send(text_data=json.dumps({'message': message}))
 
     async def send_notification(self, event):
         message = event['message']

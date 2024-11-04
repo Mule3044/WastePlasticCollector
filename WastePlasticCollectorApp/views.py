@@ -4,10 +4,6 @@ from django.db.models import Sum, Count, Avg, Max
 from django.utils import timezone
 from django.db.models.functions import TruncMonth, TruncDay
 import datetime
-import requests
-import uuid
-from rest_framework.decorators import api_view
-from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -20,8 +16,8 @@ from django.db.models import QuerySet
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
 from .forms import FeedbackForm
-from .models import *
-from .serializers import *
+from .models import WastePlastic, WastePlasticRequestor, Notification, RequestPickUp, LookUp, TaskAssigned, FeedBack, ContentManagement, WastePlasticType
+from .serializers import WastePlasticSerializer, WastePlasticRequestorCreateSerializer, WastePlasticRequestorListSerializer, NotificationSerializer, RequestPickUpSerializer, TaskAssignedSerializer, ContentManagementSerializer, WastePlasticTypeSerializer, RequestPickUpListSerializer, TaskAssignedListSerializer, NotificationListSerializer
 from UserManagement.models import CustomUsers
 
 # def index(request):
@@ -315,25 +311,6 @@ def delete_content_management(request, id):
         "content_instance": content_instance,
     }
     return render(request, "WastePlasticCollectorApp/content_management_template.html", context)
-
-@login_required
-def pointsAndRewards(request):
-    login_user = request.user
-    photo = login_user.profile_photo.url if login_user.profile_photo else None
-    agents = CustomUsers.objects.filter(role="agent")
-    # Aggregate wastePlastic_size by agent
-    agent_waste_sums = WastePlasticRequestor.objects.filter(requestor__in=agents).values('requestor__id').annotate(total_waste=Sum('wastePlastic_size'))
-
-    # Create dictionaries to map agent IDs to their respective totals
-    agent_waste_dict = {entry['requestor__id']: entry['total_waste'] for entry in agent_waste_sums}
-
-    context = {
-        "login_user": login_user,
-        "photo": photo,
-        "agent_waste_dict": agent_waste_dict,
-    }
-    return render(request, "WastePlasticCollectorApp/points_and_rewards_template.html", context)
-
 
 class WastePlasticCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -980,54 +957,3 @@ class WastePlasticTypeListAPIView(generics.ListAPIView):
                 'message': 'Failed to retrieve',
                 'error': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(['POST'])
-def request_momo_payment(request):
-    # Validate the incoming data
-    serializer = MomoPaymentSerializer(data=request.data)
-    if serializer.is_valid():
-        data = serializer.validated_data
-        amount = data.get("amount")
-        currency = data.get("currency")
-        external_id = str(uuid.uuid4())  # Generate a unique external ID
-        party_id = data.get("partyId")  # Payer phone number (MSISDN)
-        payer_message = data.get("payerMessage", "Payment request")
-        payee_note = data.get("payeeNote", "Thank you for your payment")
-        
-        # Create the payload
-        payment_data = {
-            "amount": amount,
-            "currency": currency,
-            "externalId": external_id,
-            "payer": {
-                "partyIdType": "MSISDN",
-                "partyId": party_id
-            },
-            "payerMessage": payer_message,
-            "payeeNote": payee_note
-        }
-        
-        # Headers for the API call
-        headers = {
-            "Authorization": f"Bearer {settings.MOMO_AUTH_TOKEN}",
-            "X-Reference-Id": str(uuid.uuid4()),  # Unique transaction reference
-            "X-Target-Environment": "sandbox",  # "sandbox" or "production"
-            "Ocp-Apim-Subscription-Key": settings.MOMO_SUBSCRIPTION_KEY,
-            "Content-Type": "application/json"
-        }
-        
-        try:
-            # Make the API request
-            response = requests.post(settings.MOMO_API_URL, json=payment_data, headers=headers)
-            
-            # Check if request was successful
-            if response.status_code == 202:
-                return Response({"message": "Payment request successful!", "data": response.json()}, status=status.HTTP_202_ACCEPTED)
-            else:
-                return Response({"error": "Payment request failed", "details": response.json()}, status=response.status_code)
-        
-        except requests.RequestException as e:
-            return Response({"error": "An error occurred while requesting payment", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
