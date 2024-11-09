@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import RegistrationView, LoginView, LogoutView,ChangePasswordView, UserListView, CustomUsersUpdateAPIView, UserDetailAPIView, PasswordResetRequestView, PasswordResetConfirmView
+from .views import RegistrationView, LoginView, LogoutView,ChangePasswordView, UserListView, CustomUsersUpdateAPIView, UserDetailAPIView, PasswordResetRequestView, PasswordResetConfirmView, CustomUsersDeleteAPIView
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('register', RegistrationView.as_view(), name='register'),
     path('user-list', UserListView.as_view(), name='user_list'),
     path('user/update/<int:pk>/', CustomUsersUpdateAPIView.as_view(), name='user_update'),
+    path('user/delete/<int:pk>/', CustomUsersDeleteAPIView.as_view(), name='delete_user'),
     path('user/<int:pk>/', UserDetailAPIView.as_view(), name='user_detail'),
     path('', LoginView.as_view(), name='login'),
     path('logout', LogoutView.as_view(), name='logout'),

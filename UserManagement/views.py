@@ -11,7 +11,7 @@ from rest_framework.response import  Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer, CustomUsersDetailSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, CustomUsersUpdateSerializer,CustomUsersUpdateSerializer, CustomUsersDetailSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer, CustomUsersDeleteSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 # from rest_framework.authtoken.models import Token
 from .models import CustomUsers
@@ -78,7 +78,37 @@ class CustomUsersUpdateAPIView(LoginRequiredMixin, generics.RetrieveUpdateAPIVie
                 'message': 'Failed to update user',
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
-      
+
+
+class CustomUsersDeleteAPIView(LoginRequiredMixin, generics.RetrieveDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    queryset = CustomUsers.objects.all()
+    serializer_class = CustomUsersDeleteSerializer
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response({
+                'success': True,
+                'message': 'User deleted successfully'
+            }, status=status.HTTP_200_OK)
+        except CustomUsers.DoesNotExist:
+            return Response({
+                'success': False,
+                'error': 'User not found'
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'Failed to delete user',
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
 
 
 class LoginView(APIView):

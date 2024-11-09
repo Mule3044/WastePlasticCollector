@@ -146,3 +146,8 @@ class CustomUsersDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUsers
         fields = ['id','email', 'name', 'phone_number', 'profile_photo', 'country', 'region', 'zone', 'woreda', 'kebele', 'latitude', 'longitude', 'role', 'user_status']
+
+class CustomUsersDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUsers
+        fields = ['id', 'email']
