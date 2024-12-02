@@ -110,6 +110,38 @@ class CustomUsersDeleteAPIView(LoginRequiredMixin, generics.RetrieveDestroyAPIVi
         instance.delete()
 
 
+class CheckUserExistsView(APIView):
+    """
+    Endpoint to check if a user exists based on email or phoneNumber.
+    """
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        # Get the email or username from the request data
+        identifier = request.data.get('email') or request.data.get('phone_number')
+        
+        if not identifier:
+            return Response({
+                'success': False,
+                'message': 'Email or Username is required.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the user exists
+        user_exists = CustomUsers.objects.filter(email=identifier).exists() or \
+                      CustomUsers.objects.filter(phone_number=identifier).exists()
+
+        if user_exists:
+            return Response({
+                'success': True,
+                'message': 'User exists.'
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            'success': False,
+            'message': 'User does not exist.'
+        }, status=status.HTTP_404_NOT_FOUND)
+
 
 class LoginView(APIView):
     def get(self, request):
