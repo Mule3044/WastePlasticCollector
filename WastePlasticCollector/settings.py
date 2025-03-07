@@ -281,5 +281,5 @@ AUTHENTICATION_BACKENDS = [
     # 'WastePlasticCollectorApp.authentication.CustomAuthenticationBackend',
 ]
 
-LOGIN_URL = '/'
+# LOGIN_URL = '/'
 
