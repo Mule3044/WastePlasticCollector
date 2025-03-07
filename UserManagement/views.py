@@ -53,7 +53,7 @@ class UserListView(ListAPIView):
     serializer_class = RegistrationSerializer
 
 
-class CustomUsersUpdateAPIView(LoginRequiredMixin, generics.RetrieveUpdateAPIView):
+class CustomUsersUpdateAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = CustomUsers.objects.all()
@@ -80,7 +80,7 @@ class CustomUsersUpdateAPIView(LoginRequiredMixin, generics.RetrieveUpdateAPIVie
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CustomUsersDeleteAPIView(LoginRequiredMixin, generics.RetrieveDestroyAPIView):
+class CustomUsersDeleteAPIView(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     queryset = CustomUsers.objects.all()
